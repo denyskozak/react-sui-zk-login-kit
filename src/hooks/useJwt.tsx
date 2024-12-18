@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 
-export const useJwt = (jwtString?: string) => {
+export const useJwt = () => {
     const [decodedJwt, setDecodedJwt] = useState<JwtPayload | null>(null);
     const [encodedJwt, setEncodedJwt] = useState<string | null>(null);
+    const [jwtString, setJwtString] = useState<string | null>(null);
 
     useEffect(() => {
         if (jwtString) {
@@ -16,5 +17,6 @@ export const useJwt = (jwtString?: string) => {
     return {
         decodedJwt,
         encodedJwt,
+        setJwtString,
     };
 };

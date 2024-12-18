@@ -5,9 +5,10 @@ export const useZkProof = () => {
     const [zkProof, setZkProof] = useState<any | null>(null); // Replace `any` with the actual ZK Proof type
     const [loading, setLoading] = useState(false);
 
-    const generateZkProof = async (endpoint: string, payload: any) => {
+    const generateZkProof = async <T,>(endpoint: string, payload: T) => {
         setLoading(true);
         try {
+            console.log('payload ', payload)
             const response = await axios.post(endpoint, payload, {
                 headers: { "Content-Type": "application/json" },
             });

@@ -12,9 +12,9 @@ export const useEphemeralKeyPair = () => {
     };
 
     const loadEphemeralKeyPair = () => {
-        const privateKey = sessionStorage.getItem("ephemeralKey");
-        if (privateKey) {
-            setEphemeralKeyPair(Ed25519Keypair.fromSecretKey(fromBase64(privateKey)));
+        const secretKey = sessionStorage.getItem("ephemeralKey");
+        if (secretKey) {
+            setEphemeralKeyPair(Ed25519Keypair.fromSecretKey(secretKey));
         }
     };
 
