@@ -1,0 +1,21 @@
+{
+  "name": "sui-zk-login",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "dependencies": {
+    "@mysten/bcs": "^1.2.0",
+    "@mysten/sui": "^1.17.0",
+    "@mysten/zklogin": "^0.8.1",
+    "axios": "^1.7.9",
+    "jwt-decode": "^4.0.0",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@mui/material": "^6.2.1"
+  }
+}
