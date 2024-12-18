@@ -1,4 +1,7 @@
-import {Button, CircularProgress, Paper, Stack, styled, Typography} from "@mui/material";
+import {useEffect} from "react";
+import {Box, Button, CircularProgress, Paper, Stack, styled, Typography} from "@mui/material";
+import { SuiClient } from "@mysten/sui/client";
+import { getExtendedEphemeralPublicKey } from "@mysten/sui/zklogin";
 import { useEphemeralKeyPair } from "../../src/hooks/useEphemeralKeyPair";
 import { useNonce } from "../../src/hooks/useNonce";
 import { useJwt } from "../../src/hooks/useJwt";
@@ -6,10 +9,6 @@ import { useUserSalt } from "../../src/hooks/useUserSalt";
 import { useZkLoginAddress } from "../../src/hooks/useZkLoginAddress";
 import { useZkProof } from "../../src/hooks/useZkProof";
 import { useTransactionExecution } from "../../src/hooks/useTransactionExecution";
-import { SuiClient } from "@mysten/sui/client";
-import { getExtendedEphemeralPublicKey } from "@mysten/sui/zklogin";
-import {useEffect} from "react";
-
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
@@ -43,12 +42,12 @@ function getTokenFromUrl() {
 }
 
 export const ZkLoginDemo = () => {
-    const { ephemeralKeyPair, generateEphemeralKeyPair, loadEphemeralKeyPair, clearEphemeralKeyPair } =
+    const { ephemeralKeyPair, generateEphemeralKeyPair, loadEphemeralKeyPair } =
         useEphemeralKeyPair();
     const { nonce, randomness, generateRandomnessValue, generateNonceValue } =
         useNonce();
     const { decodedJwt, encodedJwt, setJwtString } = useJwt();
-    const { userSalt, generateUserSalt, clearUserSalt } = useUserSalt();
+    const { userSalt, generateUserSalt } = useUserSalt();
     const { zkLoginAddress, generateZkLoginAddress } = useZkLoginAddress();
     const { zkProof, loading: zkProofLoading, generateZkProof } = useZkProof();
     const {
@@ -175,10 +174,9 @@ export const ZkLoginDemo = () => {
             {/* Step 4: Google Authentication */}
             <Typography variant="h6">Step 4: Authenticate with Google</Typography>
             <Button onClick={handleGoogleAuth}>Sign In with Google</Button>
-            {decodedJwt && <Typography>Decoded JWT: {JSON.stringify(decodedJwt)}</Typography>}
+            {decodedJwt && <Typography>Decoded JWT: <code> {JSON.stringify(decodedJwt)}</code></Typography>}
         </Item>),
         (<Item>
-
             {/* Step 5: Generate User Salt */}
             <Typography variant="h6">Step 5: Generate User Salt</Typography>
             <Button onClick={handleGenerateUserSalt}>Generate User Salt</Button>
@@ -210,15 +208,17 @@ export const ZkLoginDemo = () => {
         </Item>)
     ]
     return (
+        <Box sx={{ width: '100%' }}>
         <Stack spacing={4}>
             {steps[0]}
             {ephemeralKeyPair && steps[1]}
             {randomness && steps[2]}
             {nonce && steps[3]}
             {encodedJwt && steps[4]}
-            {userSalt && steps[5]}
+            {userSalt && encodedJwt && steps[5]}
             {zkLoginAddress && steps[6]}
             {zkProof && steps[7]}
         </Stack>
+        </Box>
     );
 };

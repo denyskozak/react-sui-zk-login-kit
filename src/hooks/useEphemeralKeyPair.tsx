@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
-import { fromBase64 } from "@mysten/bcs";
 
 export const useEphemeralKeyPair = () => {
     const [ephemeralKeyPair, setEphemeralKeyPair] = useState<Ed25519Keypair | null>(null);
