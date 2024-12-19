@@ -1,10 +1,11 @@
 import './App.css'
-import {ZkLoginDemo} from "./ZkLoginDemo";
+import {ZKHooks} from "./ZKHooks.tsx";
+import {ZKComponent} from "./ZKComponent.tsx";
 
 function App() {
   return (
     <>
-      <ZkLoginDemo />
+      <ZKComponent />
     </>
   )
 }

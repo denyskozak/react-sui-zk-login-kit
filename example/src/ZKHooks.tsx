@@ -9,6 +9,7 @@ import { useUserSalt } from "../../src/hooks/useUserSalt";
 import { useZkLoginAddress } from "../../src/hooks/useZkLoginAddress";
 import { useZkProof } from "../../src/hooks/useZkProof";
 import { useTransactionExecution } from "../../src/hooks/useTransactionExecution";
+import {useGoogleAuth} from "../../src/hooks";
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
@@ -41,7 +42,7 @@ function getTokenFromUrl() {
     return params.get("id_token");
 }
 
-export const ZkLoginDemo = () => {
+export const ZKHooks = () => {
     const { ephemeralKeyPair, generateEphemeralKeyPair, loadEphemeralKeyPair } =
         useEphemeralKeyPair();
     const { nonce, randomness, generateRandomnessValue, generateNonceValue } =
@@ -50,6 +51,7 @@ export const ZkLoginDemo = () => {
     const { userSalt, generateUserSalt } = useUserSalt();
     const { zkLoginAddress, generateZkLoginAddress } = useZkLoginAddress();
     const { zkProof, loading: zkProofLoading, generateZkProof } = useZkProof();
+    const { handleRedirectToGoogle } = useGoogleAuth();
     const {
         executing,
         digest,
@@ -88,15 +90,7 @@ export const ZkLoginDemo = () => {
 
     // Step 4: Handle Google Authentication
     const handleGoogleAuth = () => {
-        const params = new URLSearchParams({
-            client_id: CLIENT_ID,
-            redirect_uri: REDIRECT_URI,
-            response_type: "id_token",
-            scope: "openid",
-            nonce: nonce || "",
-        });
-        const loginURL = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
-        window.location.href = loginURL;
+        handleRedirectToGoogle(CLIENT_ID, REDIRECT_URI, nonce || "");
     };
 
     // Step 5: Generate User Salt
@@ -208,8 +202,7 @@ export const ZkLoginDemo = () => {
         </Item>)
     ]
     return (
-        <Box sx={{ width: '100%' }}>
-        <Stack spacing={4}>
+        <Box sx={{ width: '100%', gap: 4 }}>
             {steps[0]}
             {ephemeralKeyPair && steps[1]}
             {randomness && steps[2]}
@@ -218,7 +211,6 @@ export const ZkLoginDemo = () => {
             {userSalt && encodedJwt && steps[5]}
             {zkLoginAddress && steps[6]}
             {zkProof && steps[7]}
-        </Stack>
         </Box>
     );
 };

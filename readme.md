@@ -7,26 +7,6 @@ A 🛠️ React hooks library for implementing `zkLogin` 🔐 authentication and
 
 ---
 
-## 🚀 **Features**
-
-✅ **Ephemeral Key Management**: Generate, load, and clear ephemeral key pairs.  
-✅ **Nonce and Randomness Generation**: Create cryptographic nonces for authentication.  
-✅ **JWT Handling**: Decode and manage JWT payloads.  
-✅ **User Salt Management**: Generate and store user salts securely.  
-✅ **ZkLogin Address**: Derive zkLogin addresses using JWT and salts.  
-✅ **ZK Proofs**: Generate ZK proofs for secure authentication.  
-✅ **Transaction Execution**: Execute Sui transactions with ZK proofs.
-
----
-
-## 📦 **Installation**
-
-> 🚧 **Work In Progress:** Package is under development and will be available soon!
-
-For now, clone this repository and use it directly in your project.
-
----
-
 ## ⚡ **Hooks Overview**
 > useEphemeralKeyPair - Manages ephemeral key pair lifecycle (generate, access, and clear keys).
 
