@@ -1,5 +1,5 @@
 import React, {ReactNode, use, useCallback, useEffect, useLayoutEffect, useMemo} from "react";
-import {Box, Button, Typography, IconButton} from "@mui/material";
+import {Box, Button, IconButton} from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google"; // Replace with your icon or SVG
 import FacebookIcon from "@mui/icons-material/Facebook"; // Replace with your icon or SVG
 import TwitchIcon from "@mui/icons-material/SportsEsports"; // Replace with your icon or SVG
@@ -24,6 +24,13 @@ const Container = styled(Box)({
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
     backgroundColor: "#fff",
 });
+
+const Typography = styled.p`
+    color: #000000;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+`;
 
 const IconContainer = styled(Box)({
     display: "flex",
@@ -183,12 +190,12 @@ export const ZkLogin = (props: ZKLoginProps) => {
 
     return (
         <Container>
-            <Typography variant="h6" style={{color: '#000000'}}>
+            <Typography>
                 {title}
             </Typography>
 
             {/*If have JWT and no userSalt*/}
-            {decodedJwt && !userSalt && <>
+            {decodedJwt && !storedUserSalt && <>
                 <Typography style={{color: '#000000'}}>
                     Have key?
                 </Typography>
@@ -198,11 +205,11 @@ export const ZkLogin = (props: ZKLoginProps) => {
             {/*If have JWT and userSalt*/}
             {decodedJwt && storedUserSalt && (
                 <>
-                    <Typography style={{color: '#000000'}}>
-                        Save Your Key: <code>{userSalt}</code>
+                    <Typography>
+                        Save Your Key: <Typography>{storedUserSalt}</Typography>
                     </Typography>
-                    <Typography style={{color: '#000000'}}>
-                        Your address: <code>{zkLoginAddress}</code>
+                    <Typography>
+                        Your address: <Typography>{zkLoginAddress}</Typography>
                     </Typography>
                     <Button onClick={() => navigator.clipboard.writeText(storedUserSalt)}>Copy</Button>
                 </>
