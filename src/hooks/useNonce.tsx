@@ -10,13 +10,14 @@ export const useNonce = () => {
         const randomValue = generateRandomness();
         sessionStorage.setItem("randomness", randomValue);
         setRandomness(randomValue);
+        return randomValue;
     };
 
-    const generateNonceValue = (secretKey: string, maxEpoch: number) => {
-        if (!randomness) return;
-        const nonceValue = generateNonce(Ed25519Keypair.fromSecretKey(secretKey).getPublicKey(), maxEpoch, randomness);
+    const generateNonceValue = (secretKey: string, randomnessValue: string, maxEpoch: number) => {
+        const nonceValue = generateNonce(Ed25519Keypair.fromSecretKey(secretKey).getPublicKey(), maxEpoch, randomnessValue);
         sessionStorage.setItem("nonce", nonceValue);
         setNonce(nonceValue);
+        return nonceValue;
     };
 
     return {

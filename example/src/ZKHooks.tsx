@@ -1,15 +1,18 @@
 import {useEffect} from "react";
-import {Box, Button, CircularProgress, Paper, Stack, styled, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, Paper, styled, Typography} from "@mui/material";
 import { SuiClient } from "@mysten/sui/client";
-import { getExtendedEphemeralPublicKey } from "@mysten/sui/zklogin";
-import { useEphemeralKeyPair } from "../../src/hooks/useEphemeralKeyPair";
-import { useNonce } from "../../src/hooks/useNonce";
-import { useJwt } from "../../src/hooks/useJwt";
-import { useUserSalt } from "../../src/hooks/useUserSalt";
-import { useZkLoginAddress } from "../../src/hooks/useZkLoginAddress";
-import { useZkProof } from "../../src/hooks/useZkProof";
-import { useTransactionExecution } from "../../src/hooks/useTransactionExecution";
-import {useGoogleAuth} from "../../src/hooks";
+import {generateRandomness, getExtendedEphemeralPublicKey } from "@mysten/sui/zklogin";
+import {
+    useEphemeralKeyPair,
+    useNonce,
+    useJwt,
+    useUserSalt,
+    useZkLoginAddress,
+    useZkProof,
+    useTransactionExecution,
+    useGoogleAuth,
+    getTokenFromUrl,
+} from "../../src";
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
@@ -31,17 +34,6 @@ const REDIRECT_URI = "http://localhost:5173/";
 
 const suiClient = new SuiClient({ url: FULLNODE_URL });
 
-function getTokenFromUrl() {
-    // Get the hash part of the URL
-    const hash = window.location.hash;
-
-    // Remove the leading '#' and split the hash into key-value pairs
-    const params = new URLSearchParams(hash.substring(1));
-
-    // Extract the `id_token` parameter
-    return params.get("id_token");
-}
-
 export const ZKHooks = () => {
     const { ephemeralKeyPair, generateEphemeralKeyPair, loadEphemeralKeyPair } =
         useEphemeralKeyPair();
@@ -62,9 +54,12 @@ export const ZKHooks = () => {
         loadEphemeralKeyPair();
 
         if (window.location.hash) {
-            const token = getTokenFromUrl();
-            setJwtString(token);
-            window.location.hash = '';
+            const [token, cleanHashParams] = getTokenFromUrl();
+            if (token) {
+                setJwtString(token);
+                window.location.hash = cleanHashParams.toString();
+            }
+
         }
     }, []);
 
@@ -80,11 +75,11 @@ export const ZKHooks = () => {
 
     // Step 3: Generate Randomness and Nonce
     const handleGenerateNonce = async () => {
-        if (ephemeralKeyPair) {
+        if (ephemeralKeyPair && randomness) {
             const { epoch } = await suiClient.getLatestSuiSystemState();
 
             const maxEpoch = Number(epoch) + 2; // live 2 epochs
-            generateNonceValue(ephemeralKeyPair.getSecretKey(), maxEpoch);
+            generateNonceValue(ephemeralKeyPair.getSecretKey(), randomness, maxEpoch);
         }
     };
 
@@ -95,7 +90,7 @@ export const ZKHooks = () => {
 
     // Step 5: Generate User Salt
     const handleGenerateUserSalt = () => {
-        generateUserSalt();
+        generateUserSalt(generateRandomness()); // need to be provider from your server. associated with jwt
     };
 
     // Step 6: Generate ZkLogin Address
@@ -202,7 +197,7 @@ export const ZKHooks = () => {
         </Item>)
     ]
     return (
-        <Box sx={{ width: '100%', gap: 4 }}>
+        <Box style={{ width: '100%', gap: 4, display: 'flex', flexDirection: 'column' }}>
             {steps[0]}
             {ephemeralKeyPair && steps[1]}
             {randomness && steps[2]}

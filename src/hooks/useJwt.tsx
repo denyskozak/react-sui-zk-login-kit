@@ -3,20 +3,23 @@ import { JwtPayload, jwtDecode } from "jwt-decode";
 
 export const useJwt = () => {
     const [decodedJwt, setDecodedJwt] = useState<JwtPayload | null>(null);
-    const [encodedJwt, setEncodedJwt] = useState<string | null>(null);
-    const [jwtString, setJwtString] = useState<string | null>(null);
+    const [encodedJwt, setEncodedJwt] = useState<string | null>( sessionStorage.getItem('jwt'));
 
     useEffect(() => {
-        if (jwtString) {
-            const decoded = jwtDecode<JwtPayload>(jwtString);
+        if (encodedJwt) {
+            const decoded = jwtDecode<JwtPayload>(encodedJwt);
             setDecodedJwt(decoded);
-            setEncodedJwt(jwtString);
         }
-    }, [jwtString]);
+    }, [encodedJwt]);
+
+    const setJwt = (jwt: string) => {
+        setEncodedJwt(jwt);
+        sessionStorage.setItem('jwt', jwt);
+    }
 
     return {
         decodedJwt,
         encodedJwt,
-        setJwtString,
+        setJwtString: setJwt,
     };
 };

@@ -6,8 +6,7 @@ export const useUserSalt = () => {
         localStorage.getItem("userSalt")
     );
 
-    const generateUserSalt = () => {
-        const salt = generateRandomness();
+    const generateUserSalt = (salt: string) => {
         localStorage.setItem("userSalt", salt);
         setUserSalt(salt);
     };

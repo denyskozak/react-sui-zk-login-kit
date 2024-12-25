@@ -8,12 +8,15 @@ export const useEphemeralKeyPair = () => {
         const keyPair = Ed25519Keypair.generate();
         sessionStorage.setItem("ephemeralKey", keyPair.getSecretKey()); // Ed25519
         setEphemeralKeyPair(keyPair);
+        return keyPair;
     };
 
     const loadEphemeralKeyPair = () => {
         const secretKey = sessionStorage.getItem("ephemeralKey");
         if (secretKey) {
-            setEphemeralKeyPair(Ed25519Keypair.fromSecretKey(secretKey));
+            const keyPair = Ed25519Keypair.fromSecretKey(secretKey);
+            setEphemeralKeyPair(keyPair);
+            return keyPair;
         }
     };
 

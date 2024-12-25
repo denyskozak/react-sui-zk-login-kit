@@ -6,7 +6,7 @@ export const useGoogleAuth = () => {
             client_id: clientId,
             redirect_uri: redirectURI,
             response_type: "id_token",
-            scope: "openid",
+            scope: "openid email",
             nonce: nonce || "",
         });
         window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
