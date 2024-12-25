@@ -8,6 +8,8 @@
   },
   "private": true,
   "dependencies": {
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.3.0",
     "@mysten/bcs": "^1.2.0",
     "@mysten/sui": "^1.17.0",
     "@mysten/zklogin": "^0.8.1",

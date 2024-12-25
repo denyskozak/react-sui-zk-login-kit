@@ -1,5 +1,5 @@
 import { SuiClient } from "@mysten/sui/client";
-import {SuiZKLogin} from "../../src";
+import {ZkLogin} from "../../src";
 
 // Example configuration
 const FULLNODE_URL = "https://fullnode.devnet.sui.io/";
@@ -12,7 +12,7 @@ const suiClient = new SuiClient({ url: FULLNODE_URL });
 export const ZKComponent = () => {
 
     return (
-        <SuiZKLogin
+        <ZkLogin
             googleParams={{
                 clientId: CLIENT_ID,
                 redirectURI: REDIRECT_URI,

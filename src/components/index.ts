@@ -1,1 +1,1 @@
-export * from './SuiZKLogin';
+export * from './ZkLogin';
