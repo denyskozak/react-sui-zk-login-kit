@@ -1,18 +1,23 @@
 import { useState } from "react";
 import axios from "axios";
 
+interface ZkProof {
+    proofPoints: Record<string, string[]>
+}
 export const useZkProof = () => {
-    const [zkProof, setZkProof] = useState<any | null>(null); // Replace `any` with the actual ZK Proof type
+    const [zkProof, setZkProof] = useState<ZkProof | null>(null); // Replace `any` with the actual ZK Proof type
     const [loading, setLoading] = useState(false);
 
     const generateZkProof = async <T,>(endpoint: string, payload: T) => {
         setLoading(true);
         try {
-            console.log('payload ', payload)
             const response = await axios.post(endpoint, payload, {
                 headers: { "Content-Type": "application/json" },
             });
-            setZkProof(response.data);
+            const zkProof = response.data as ZkProof;
+            setZkProof(zkProof);
+            return zkProof;
+
         } catch (error) {
             console.error("Error generating ZK Proof:", error);
         } finally {

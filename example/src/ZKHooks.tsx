@@ -40,7 +40,7 @@ export const ZKHooks = () => {
     const { nonce, randomness, generateRandomnessValue, generateNonceValue } =
         useNonce();
     const { decodedJwt, encodedJwt, setJwtString } = useJwt();
-    const { userSalt, generateUserSalt } = useUserSalt();
+    const { userSalt, setUserSalt } = useUserSalt();
     const { zkLoginAddress, generateZkLoginAddress } = useZkLoginAddress();
     const { zkProof, loading: zkProofLoading, generateZkProof } = useZkProof();
     const { handleRedirectToGoogle } = useGoogleAuth();
@@ -54,10 +54,10 @@ export const ZKHooks = () => {
         loadEphemeralKeyPair();
 
         if (window.location.hash) {
-            const [token, cleanHashParams] = getTokenFromUrl();
+            const token = getTokenFromUrl();
             if (token) {
                 setJwtString(token);
-                window.location.hash = cleanHashParams.toString();
+                window.location.hash = '';
             }
 
         }
@@ -90,7 +90,7 @@ export const ZKHooks = () => {
 
     // Step 5: Generate User Salt
     const handleGenerateUserSalt = () => {
-        generateUserSalt(generateRandomness()); // need to be provider from your server. associated with jwt
+        setUserSalt(generateRandomness()); // need to be provider from your server. associated with jwt
     };
 
     // Step 6: Generate ZkLogin Address

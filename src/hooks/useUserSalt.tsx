@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { generateRandomness } from "@mysten/sui/zklogin";
 
 export const useUserSalt = () => {
     const [userSalt, setUserSalt] = useState<string | null>(
         localStorage.getItem("userSalt")
     );
 
-    const generateUserSalt = (salt: string) => {
+    const addUserSalt = (salt: string) => {
         localStorage.setItem("userSalt", salt);
         setUserSalt(salt);
     };
@@ -18,7 +17,7 @@ export const useUserSalt = () => {
 
     return {
         userSalt,
-        generateUserSalt,
+        setUserSalt: addUserSalt,
         clearUserSalt,
     };
 };

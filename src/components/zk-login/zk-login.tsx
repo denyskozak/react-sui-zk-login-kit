@@ -6,9 +6,10 @@ import TwitchIcon from "@mui/icons-material/SportsEsports"; // Replace with your
 import {useGoogleAuth} from "../../hooks/useGoogleAuth"; // Example of your hook
 import {SuiClient} from "@mysten/sui/client";
 import styled from '@emotion/styled';
-import {useEphemeralKeyPair, useJwt, useNonce, useUserSalt, useZkLoginAddress} from "../../hooks";
+import {useEphemeralKeyPair, useJwt, useNonce, useUserSalt, useZkLoginAddress, useZkProof} from "../../hooks";
 import {Ed25519Keypair} from "@mysten/sui/keypairs/ed25519";
 import {getTokenFromUrl} from "../../utilities";
+import {getExtendedEphemeralPublicKey} from "@mysten/sui/zklogin";
 
 // Styled Components
 const Container = styled(Box)({
@@ -25,7 +26,7 @@ const Container = styled(Box)({
     backgroundColor: "#fff",
 });
 
-const Typography = styled.p`
+const Typography = styled.span`
     color: #000000;
     width: 100%;
     padding: 0;
@@ -97,29 +98,53 @@ export const ZkLogin = (props: ZKLoginProps) => {
     } = props;
     const {handleRedirectToGoogle} = useGoogleAuth();
     const {generateEphemeralKeyPair, loadEphemeralKeyPair, ephemeralKeyPair} = useEphemeralKeyPair();
-    const {generateNonceValue, generateRandomnessValue, nonce} = useNonce();
+    const {generateNonceValue, generateRandomnessValue, randomness, nonce} = useNonce();
     const {setJwtString, decodedJwt, encodedJwt} = useJwt();
-    const {generateUserSalt, userSalt: storedUserSalt} = useUserSalt();
+    const {setUserSalt, userSalt: storedUserSalt} = useUserSalt();
     const {generateZkLoginAddress, zkLoginAddress} = useZkLoginAddress();
+    const {zkProof, loading: zkProofLoading, generateZkProof} = useZkProof();
 
     useEffect(() => {
         if (observeTokenInURL && window && window.location.hash) {
-            const [token, cleanHashParams] = getTokenFromUrl();
+            const token = getTokenFromUrl();
 
             if (token) {
                 setJwtString(token);
                 onJwtReceived?.(token)
-                window.location.hash = cleanHashParams.toString();
+                window.location.hash = '';
             }
         }
     }, []);
 
     useEffect(() => {
+        const zkProof = async () => {
+            if (userSalt && encodedJwt && ephemeralKeyPair) {
+                const extendedPublicKey = getExtendedEphemeralPublicKey(
+                    ephemeralKeyPair.getPublicKey()
+                );
+                const {epoch} = await suiClient.getLatestSuiSystemState();
 
-        if (userSalt && encodedJwt) {
-            generateUserSalt(userSalt);
-            generateZkLoginAddress(encodedJwt, userSalt);
-        }
+                const maxEpoch = Number(epoch) + 2; // live 2 epochs
+
+                const result = await generateZkProof(proverProvider, {
+                    jwt: encodedJwt,
+                    extendedEphemeralPublicKey: extendedPublicKey,
+                    maxEpoch,
+                    jwtRandomness: randomness,
+                    salt: userSalt,
+                    keyClaimName: "sub",
+                });
+
+                if (result && result.proofPoints) {
+                    setUserSalt(userSalt);
+                    generateZkLoginAddress(encodedJwt, userSalt);
+                }
+            }
+
+
+        };
+
+        zkProof().catch((error) => console.error('Error User Salt Proof ZK Login component', error));
     }, [userSalt]);
 
     useLayoutEffect(() => {
@@ -132,12 +157,13 @@ export const ZkLogin = (props: ZKLoginProps) => {
             onKeypairReceived?.(keypair);
 
             // Step 2
+            if (randomness && nonce) return;
             const randomValue = generateRandomnessValue();
             const {epoch} = await suiClient.getLatestSuiSystemState();
 
             const maxEpoch = Number(epoch) + 2; // live 2 epochs
-            const nonce = generateNonceValue(keypair.getSecretKey(), randomValue, maxEpoch);
-            onNonceReceived?.(nonce);
+            const newNonce = generateNonceValue(keypair.getSecretKey(), randomValue, maxEpoch);
+            onNonceReceived?.(newNonce);
         };
 
         init().catch((error) => console.error('Error init ZK Login component', error));
@@ -155,36 +181,34 @@ export const ZkLogin = (props: ZKLoginProps) => {
         }
     };
 
-    const renderProvider = useMemo<RenderProviders>(() => (
-        {
-            google: () => (
-                <IconButton
-                    key="google"
-                    onClick={handleGoogleLogin}
-                    style={{
-                        backgroundColor: "#f5f5f5",
-                        padding: "12px",
-                        borderRadius: "8px",
-                    }}
-                >
-                    <GoogleIcon style={{fontSize: "32px"}}/>
-                </IconButton>
-            ),
-            twitch: () => (
-                <IconButton
-                    key="twitch"
-                    onClick={handleGoogleLogin}
-                    style={{
-                        backgroundColor: "#f5f5f5",
-                        padding: "12px",
-                        borderRadius: "8px",
-                    }}
-                >
-                    <TwitchIcon style={{fontSize: "32px"}}/>
-                </IconButton>
-            )
-        }
-    ), []);
+    const renderProvider = {
+        google: () => (
+            <IconButton
+                key="google"
+                onClick={handleGoogleLogin}
+                style={{
+                    backgroundColor: "#f5f5f5",
+                    padding: "12px",
+                    borderRadius: "8px",
+                }}
+            >
+                <GoogleIcon style={{fontSize: "32px"}}/>
+            </IconButton>
+        ),
+        twitch: () => (
+            <IconButton
+                key="twitch"
+                onClick={handleGoogleLogin}
+                style={{
+                    backgroundColor: "#f5f5f5",
+                    padding: "12px",
+                    borderRadius: "8px",
+                }}
+            >
+                <TwitchIcon style={{fontSize: "32px"}}/>
+            </IconButton>
+        )
+    };
 
     const icons = () => providerList.map(([id]) => renderProvider[id as keyof Providers]?.());
 
@@ -195,23 +219,24 @@ export const ZkLogin = (props: ZKLoginProps) => {
             </Typography>
 
             {/*If have JWT and no userSalt*/}
-            {decodedJwt && !storedUserSalt && <>
-                <Typography style={{color: '#000000'}}>
-                    Have key?
+            {zkProofLoading && (
+                <Typography>
+                    Loading ZK Proof ...
                 </Typography>
-                <Button onClick={() => encodedJwt && onGenerateUserSaltClick?.(encodedJwt)}>No</Button>
-            </>}
+            )}
 
             {/*If have JWT and userSalt*/}
             {decodedJwt && storedUserSalt && (
                 <>
-                    <Typography>
-                        Save Your Key: <Typography>{storedUserSalt}</Typography>
-                    </Typography>
-                    <Typography>
-                        Your address: <Typography>{zkLoginAddress}</Typography>
-                    </Typography>
-                    <Button onClick={() => navigator.clipboard.writeText(storedUserSalt)}>Copy</Button>
+                    {zkLoginAddress && (
+                        <Typography>
+                            Your
+                            address: <Typography>...{String(zkLoginAddress).slice(zkLoginAddress.length / 2, zkLoginAddress.length - 1)}</Typography>
+                        </Typography>
+                    )}
+                    <Button onClick={() => navigator.clipboard.writeText(storedUserSalt)}>Copy Secret Key</Button>
+                    <Button onClick={() => navigator.clipboard.writeText(zkLoginAddress)}>Copy Address</Button>
+
                 </>
             )}
 

@@ -36,6 +36,10 @@ export const ZKComponent = () => {
                     google: {
                         clientId: CLIENT_ID,
                         redirectURI: REDIRECT_URI,
+                    },
+                    twitch: {
+                        clientId: CLIENT_ID,
+                        redirectURI: REDIRECT_URI,
                     }
                 }}
                 suiClient={suiClient}
