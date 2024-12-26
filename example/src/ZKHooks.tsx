@@ -1,6 +1,5 @@
 import {useEffect} from "react";
 import {Box, Button, CircularProgress, Paper, styled, Typography} from "@mui/material";
-import { SuiClient } from "@mysten/sui/client";
 import {generateRandomness, getExtendedEphemeralPublicKey } from "@mysten/sui/zklogin";
 import {
     useEphemeralKeyPair,
@@ -13,6 +12,7 @@ import {
     useGoogleAuth,
     getTokenFromUrl,
 } from "../../src";
+import {useZKLoginContext} from "../../src/hooks/useZKLoginContext.ts";
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
@@ -27,14 +27,13 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 // Example configuration
-const FULLNODE_URL = "https://fullnode.devnet.sui.io/";
 const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
 const CLIENT_ID = "648851101099-70tn7ksk6207uutiikv4d5783o0tmpmo.apps.googleusercontent.com";
 const REDIRECT_URI = "http://localhost:5173/";
 
-const suiClient = new SuiClient({ url: FULLNODE_URL });
-
 export const ZKHooks = () => {
+    const {client: suiClient} = useZKLoginContext();
+
     const { ephemeralKeyPair, generateEphemeralKeyPair, loadEphemeralKeyPair } =
         useEphemeralKeyPair();
     const { nonce, randomness, generateRandomnessValue, generateNonceValue } =

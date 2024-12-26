@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { jwtToAddress } from "@mysten/sui/zklogin";
 
+import { useZKLoginContext } from "./useZKLoginContext";
+
 export const useZkLoginAddress = () => {
-    const [zkLoginAddress, setZkLoginAddress] = useState<string | null>(sessionStorage.getItem("zkLoginAddress"));
+    const { state, dispatch } = useZKLoginContext();
 
     const generateZkLoginAddress = (jwt: string, userSalt: string) => {
         const address = jwtToAddress(jwt, userSalt);
-        sessionStorage.setItem("zkLoginAddress", address);
-        setZkLoginAddress(address);
+        dispatch({ type: "SET_ZK_LOGIN_ADDRESS", payload: address });
     };
 
     return {
-        zkLoginAddress,
+        zkLoginAddress: state.zkLoginAddress,
         generateZkLoginAddress,
     };
 };

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
+import {ZkProof} from "../types/zf-proof";
 
-interface ZkProof {
-    proofPoints: Record<string, string[]>
-}
+import { useZKLoginContext } from "./useZKLoginContext";
+
 export const useZkProof = () => {
-    const [zkProof, setZkProof] = useState<ZkProof | null>(null); // Replace `any` with the actual ZK Proof type
+    const { state, dispatch } = useZKLoginContext();
     const [loading, setLoading] = useState(false);
 
     const generateZkProof = async <T,>(endpoint: string, payload: T) => {
@@ -15,7 +15,7 @@ export const useZkProof = () => {
                 headers: { "Content-Type": "application/json" },
             });
             const zkProof = response.data as ZkProof;
-            setZkProof(zkProof);
+            dispatch({ type: "SET_ZK_PROOF", payload: zkProof });
             return zkProof;
 
         } catch (error) {
@@ -26,7 +26,7 @@ export const useZkProof = () => {
     };
 
     return {
-        zkProof,
+        zkProof: state.zkProof,
         loading,
         generateZkProof,
     };

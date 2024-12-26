@@ -1,22 +1,19 @@
-import { useState } from "react";
+import { useZKLoginContext } from "./useZKLoginContext";
 
 export const useUserSalt = () => {
-    const [userSalt, setUserSalt] = useState<string | null>(
-        localStorage.getItem("userSalt")
-    );
+    const { state, dispatch } = useZKLoginContext();
 
     const addUserSalt = (salt: string) => {
         localStorage.setItem("userSalt", salt);
-        setUserSalt(salt);
+        dispatch({ type: "SET_USER_SALT", payload: salt });
     };
-
     const clearUserSalt = () => {
         localStorage.removeItem("userSalt");
-        setUserSalt(null);
-    };
+        dispatch({type: "DELETE_USER_SALT"});
+    }
 
     return {
-        userSalt,
+        userSalt: state.userSalt,
         setUserSalt: addUserSalt,
         clearUserSalt,
     };

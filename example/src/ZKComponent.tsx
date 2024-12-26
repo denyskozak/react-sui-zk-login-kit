@@ -1,15 +1,11 @@
-import { SuiClient } from "@mysten/sui/client";
-import {useJwt, ZkLogin} from "../../src";
+import {ZkLogin} from "../../src";
 import {useEffect, useState} from "react";
 import { generateRandomness } from "@mysten/sui/zklogin";
 
 // Example configuration
-const FULLNODE_URL = "https://fullnode.devnet.sui.io/";
 const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
 const CLIENT_ID = "648851101099-70tn7ksk6207uutiikv4d5783o0tmpmo.apps.googleusercontent.com";
 const REDIRECT_URI = "http://localhost:5173/";
-
-const suiClient = new SuiClient({ url: FULLNODE_URL });
 
 export const ZKComponent = () => {
     const [jwt, setJwt] = useState('');
@@ -42,7 +38,6 @@ export const ZKComponent = () => {
                         redirectURI: REDIRECT_URI,
                     }
                 }}
-                suiClient={suiClient}
                 userSalt={userSalt}
                 proverProvider={SUI_PROVER_ENDPOINT}
                 onJwtReceived={setJwt}

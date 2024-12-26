@@ -1,9 +1,10 @@
 import {useState} from "react";
-import {SuiClient} from "@mysten/sui/client";
+import {useZKLoginContext} from "./useZKLoginContext";
 
-export const useTransactionExecution = (suiClient: SuiClient) => {
+export const useTransactionExecution = () => {
     const [executing, setExecuting] = useState(false);
     const [digest, setDigest] = useState<string | null>(null);
+    const { client: suiClient } = useZKLoginContext();
 
     const executeTransaction = async (
         transactionBlock: Uint8Array,

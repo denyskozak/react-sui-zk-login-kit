@@ -1,13 +1,12 @@
-import { useState } from "react";
 import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
+import { useZKLoginContext } from "./useZKLoginContext";
 
 export const useEphemeralKeyPair = () => {
-    const [ephemeralKeyPair, setEphemeralKeyPair] = useState<Ed25519Keypair | null>(null);
+    const { dispatch, state } = useZKLoginContext();
 
     const generateEphemeralKeyPair = () => {
         const keyPair = Ed25519Keypair.generate();
-        sessionStorage.setItem("ephemeralKey", keyPair.getSecretKey()); // Ed25519
-        setEphemeralKeyPair(keyPair);
+        dispatch({ type: "SET_EPHEMERAL_KEY_PAIR", payload: keyPair.getSecretKey() });
         return keyPair;
     };
 
@@ -15,20 +14,14 @@ export const useEphemeralKeyPair = () => {
         const secretKey = sessionStorage.getItem("ephemeralKey");
         if (secretKey) {
             const keyPair = Ed25519Keypair.fromSecretKey(secretKey);
-            setEphemeralKeyPair(keyPair);
+            dispatch({ type: "SET_EPHEMERAL_KEY_PAIR", payload: secretKey });
             return keyPair;
         }
     };
 
-    const clearEphemeralKeyPair = () => {
-        sessionStorage.removeItem("ephemeralKey");
-        setEphemeralKeyPair(null);
-    };
-
     return {
-        ephemeralKeyPair,
+        ephemeralKeyPair: state.ephemeralKeySecret ? Ed25519Keypair.fromSecretKey(state.ephemeralKeySecret) : null,
         generateEphemeralKeyPair,
         loadEphemeralKeyPair,
-        clearEphemeralKeyPair,
     };
 };

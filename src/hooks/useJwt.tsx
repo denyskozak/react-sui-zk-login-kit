@@ -1,25 +1,17 @@
-import { useState, useEffect } from "react";
 import { JwtPayload, jwtDecode } from "jwt-decode";
+import { useZKLoginContext } from "./useZKLoginContext";
 
 export const useJwt = () => {
-    const [decodedJwt, setDecodedJwt] = useState<JwtPayload | null>(null);
-    const [encodedJwt, setEncodedJwt] = useState<string | null>( sessionStorage.getItem('jwt'));
+    const { state, dispatch } = useZKLoginContext();
 
-    useEffect(() => {
-        if (encodedJwt) {
-            const decoded = jwtDecode<JwtPayload>(encodedJwt);
-            setDecodedJwt(decoded);
-        }
-    }, [encodedJwt]);
-
-    const setJwt = (jwt: string) => {
-        setEncodedJwt(jwt);
-        sessionStorage.setItem('jwt', jwt);
-    }
+    const setJwtString = (jwtString: string | null) => {
+        const decodedJwt = jwtString ? jwtDecode<JwtPayload>(jwtString) : null;
+        dispatch({ type: "SET_JWT", payload: { jwtString, decodedJwt } });
+    };
 
     return {
-        decodedJwt,
-        encodedJwt,
-        setJwtString: setJwt,
+        encodedJwt: state.jwtString,
+        decodedJwt: state.decodedJwt,
+        setJwtString,
     };
 };

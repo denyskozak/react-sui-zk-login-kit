@@ -10,6 +10,7 @@ import {useEphemeralKeyPair, useJwt, useNonce, useUserSalt, useZkLoginAddress, u
 import {Ed25519Keypair} from "@mysten/sui/keypairs/ed25519";
 import {getTokenFromUrl} from "../../utilities";
 import {getExtendedEphemeralPublicKey} from "@mysten/sui/zklogin";
+import {useZKLoginContext} from "../../hooks/useZKLoginContext";
 
 // Styled Components
 const Container = styled(Box)({
@@ -71,7 +72,6 @@ type RenderProviders = Record<keyof Providers, () => JSX.Element>;
 interface ZKLoginProps {
     providers: Providers;
     proverProvider: string;
-    suiClient: SuiClient;
     title?: string;
     userSalt?: string;
     // hooks
@@ -93,9 +93,9 @@ export const ZkLogin = (props: ZKLoginProps) => {
         observeTokenInURL = true,
         proverProvider,
         userSalt,
-        suiClient,
         title = 'Sign In With Your Preferred Service'
     } = props;
+    const {client: suiClient} = useZKLoginContext();
     const {handleRedirectToGoogle} = useGoogleAuth();
     const {generateEphemeralKeyPair, loadEphemeralKeyPair, ephemeralKeyPair} = useEphemeralKeyPair();
     const {generateNonceValue, generateRandomnessValue, randomness, nonce} = useNonce();
@@ -140,8 +140,6 @@ export const ZkLogin = (props: ZKLoginProps) => {
                     generateZkLoginAddress(encodedJwt, userSalt);
                 }
             }
-
-
         };
 
         zkProof().catch((error) => console.error('Error User Salt Proof ZK Login component', error));
@@ -150,10 +148,7 @@ export const ZkLogin = (props: ZKLoginProps) => {
     useLayoutEffect(() => {
         const init = async () => {
             // Step 1
-            let keypair = loadEphemeralKeyPair();
-            if (!keypair) {
-                keypair = generateEphemeralKeyPair();
-            }
+            const keypair = loadEphemeralKeyPair() || generateEphemeralKeyPair();
             onKeypairReceived?.(keypair);
 
             // Step 2
@@ -162,6 +157,7 @@ export const ZkLogin = (props: ZKLoginProps) => {
             const {epoch} = await suiClient.getLatestSuiSystemState();
 
             const maxEpoch = Number(epoch) + 2; // live 2 epochs
+            console.log('keypair.getSecretKey() ', keypair.getSecretKey())
             const newNonce = generateNonceValue(keypair.getSecretKey(), randomValue, maxEpoch);
             onNonceReceived?.(newNonce);
         };
@@ -226,17 +222,13 @@ export const ZkLogin = (props: ZKLoginProps) => {
             )}
 
             {/*If have JWT and userSalt*/}
-            {decodedJwt && storedUserSalt && (
+            {decodedJwt && storedUserSalt && zkLoginAddress && (
                 <>
-                    {zkLoginAddress && (
-                        <Typography>
-                            Your
-                            address: <Typography>...{String(zkLoginAddress).slice(zkLoginAddress.length / 2, zkLoginAddress.length - 1)}</Typography>
-                        </Typography>
-                    )}
-                    <Button onClick={() => navigator.clipboard.writeText(storedUserSalt)}>Copy Secret Key</Button>
+                    <Typography>
+                        Your
+                        address: <Typography>...{String(zkLoginAddress).slice(zkLoginAddress.length / 2, zkLoginAddress.length - 1)}</Typography>
+                    </Typography>
                     <Button onClick={() => navigator.clipboard.writeText(zkLoginAddress)}>Copy Address</Button>
-
                 </>
             )}
 
