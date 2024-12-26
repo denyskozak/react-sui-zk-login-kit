@@ -34,7 +34,7 @@ const REDIRECT_URI = "http://localhost:5173/";
 export const ZKHooks = () => {
     const {client: suiClient} = useZKLoginContext();
 
-    const { ephemeralKeyPair, generateEphemeralKeyPair, loadEphemeralKeyPair } =
+    const { ephemeralKeyPair, generateEphemeralKeyPair } =
         useEphemeralKeyPair();
     const { nonce, randomness, generateRandomnessValue, generateNonceValue } =
         useNonce();
@@ -47,11 +47,9 @@ export const ZKHooks = () => {
         executing,
         digest,
         executeTransaction,
-    } = useTransactionExecution(suiClient);
+    } = useTransactionExecution();
 
     useEffect(() => {
-        loadEphemeralKeyPair();
-
         if (window.location.hash) {
             const token = getTokenFromUrl();
             if (token) {

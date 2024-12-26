@@ -126,8 +126,6 @@ export const ZkLogin = (props: ZKLoginProps) => {
 
                 const maxEpoch = Number(epoch) + 2; // live 2 epochs
 
-                console.log('encodedJwt ', encodedJwt)
-                console.log('randomness ', randomness)
                 const result = await generateZkProof(proverProvider, {
                     jwt: encodedJwt,
                     extendedEphemeralPublicKey: extendedPublicKey,
