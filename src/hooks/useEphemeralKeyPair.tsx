@@ -10,18 +10,8 @@ export const useEphemeralKeyPair = () => {
         return keyPair;
     };
 
-    const loadEphemeralKeyPair = () => {
-        const secretKey = sessionStorage.getItem("ephemeralKey");
-        if (secretKey) {
-            const keyPair = Ed25519Keypair.fromSecretKey(secretKey);
-            dispatch({ type: "SET_EPHEMERAL_KEY_PAIR", payload: secretKey });
-            return keyPair;
-        }
-    };
-
     return {
         ephemeralKeyPair: state.ephemeralKeySecret ? Ed25519Keypair.fromSecretKey(state.ephemeralKeySecret) : null,
         generateEphemeralKeyPair,
-        loadEphemeralKeyPair,
     };
 };

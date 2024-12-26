@@ -30,7 +30,7 @@ export type ZKLoginAction =
     { type: "SET_EPHEMERAL_KEY_PAIR"; payload: string }
     | { type: "SET_RANDOMNESS"; payload: string }
     | { type: "SET_NONCE"; payload: string }
-    | { type: "SET_JWT"; payload: { jwtString: string; decodedJwt: JwtPayload } }
+    | { type: "SET_JWT"; payload: { jwtString:  string | null; decodedJwt: JwtPayload | null } }
     | { type: "SET_USER_SALT"; payload: string }
     | { type: "DELETE_USER_SALT"; }
     | { type: "SET_ZK_LOGIN_ADDRESS"; payload: string }

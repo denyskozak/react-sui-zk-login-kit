@@ -126,6 +126,8 @@ export const ZkLogin = (props: ZKLoginProps) => {
 
                 const maxEpoch = Number(epoch) + 2; // live 2 epochs
 
+                console.log('encodedJwt ', encodedJwt)
+                console.log('randomness ', randomness)
                 const result = await generateZkProof(proverProvider, {
                     jwt: encodedJwt,
                     extendedEphemeralPublicKey: extendedPublicKey,
@@ -145,30 +147,30 @@ export const ZkLogin = (props: ZKLoginProps) => {
         zkProof().catch((error) => console.error('Error User Salt Proof ZK Login component', error));
     }, [userSalt]);
 
+    useEffect(() => {
+        if (!ephemeralKeyPair) generateEphemeralKeyPair();
+    }, []);
+
     useLayoutEffect(() => {
-        const init = async () => {
-            // Step 1
-            const keypair = loadEphemeralKeyPair() || generateEphemeralKeyPair();
-            onKeypairReceived?.(keypair);
+        const generateRandomnessAndNonce = async () => {
+            if (ephemeralKeyPair && !randomness && !nonce) {
+                const randomValue = generateRandomnessValue();
+                const {epoch} = await suiClient.getLatestSuiSystemState();
 
-            // Step 2
-            if (randomness && nonce) return;
-            const randomValue = generateRandomnessValue();
-            const {epoch} = await suiClient.getLatestSuiSystemState();
-
-            const maxEpoch = Number(epoch) + 2; // live 2 epochs
-            console.log('keypair.getSecretKey() ', keypair.getSecretKey())
-            const newNonce = generateNonceValue(keypair.getSecretKey(), randomValue, maxEpoch);
-            onNonceReceived?.(newNonce);
+                const maxEpoch = Number(epoch) + 2; // live 2 epochs
+                const newNonce = generateNonceValue(ephemeralKeyPair.getSecretKey(), randomValue, maxEpoch);
+                onNonceReceived?.(newNonce);
+            }
         };
 
-        init().catch((error) => console.error('Error init ZK Login component', error));
-    }, []);
+        generateRandomnessAndNonce().catch((error) => console.error('Error init ZK Login component', error));
+    }, [ephemeralKeyPair]);
 
     const providerList = useMemo(() => Object.entries(providers), [providers]);
 
     const handleGoogleLogin = () => {
         if (providers.google && nonce) {
+            console.log('nonce ', nonce)
             handleRedirectToGoogle(
                 providers.google.clientId,
                 providers.google.redirectURI,
@@ -226,7 +228,7 @@ export const ZkLogin = (props: ZKLoginProps) => {
                 <>
                     <Typography>
                         Your
-                        address: <Typography>...{String(zkLoginAddress).slice(zkLoginAddress.length / 2, zkLoginAddress.length - 1)}</Typography>
+                        address: <Typography>...{String(zkLoginAddress).slice(zkLoginAddress.length / 2, zkLoginAddress.length)}</Typography>
                     </Typography>
                     <Button onClick={() => navigator.clipboard.writeText(zkLoginAddress)}>Copy Address</Button>
                 </>
