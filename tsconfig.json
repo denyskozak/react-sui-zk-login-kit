@@ -10,7 +10,8 @@
     "outDir": "dist",
     "strict": true,
     "target": "ESNext",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "skipLibCheck": true, // Skip type checking for node_modules
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
