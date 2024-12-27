@@ -1,21 +1,48 @@
 {
   "name": "@denyskozak/react-sui-zk-login-kit",
-  "version": "1.0.4",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.5",
+  "description": "A React kit for SUI zk login integration with components and hooks.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/denyskozak/react-sui-zk-login-kit"
+  },
+  "keywords": [
+    "react",
+    "sui",
+    "zk-login",
+    "hooks",
+    "components"
+  ],
+  "author": "Your Name denys.kozak.self@gmail.com",
+  "license": "MIT",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "dependencies": {
     "@emotion/styled": "^11.14.0",
     "@mysten/bcs": "^1.2.0",
     "@mysten/sui": "^1.17.0",
     "axios": "^1.7.9",
     "jwt-decode": "^4.0.0",
-    "react": "^18.3.1"
+    "react": "^18.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1"
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "rollup": "^4.29.1",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.7.2"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   }
 }
