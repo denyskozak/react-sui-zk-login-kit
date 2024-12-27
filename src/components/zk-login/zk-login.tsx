@@ -187,7 +187,7 @@ export const ZkLogin = (props: ZKLoginProps) => {
             )}
 
 
-            {!zkLoginAddress && !zkProofLoading && (
+            {!zkLoginAddress && (
                 <IconContainer>
                     {providerList.map(([providerName]) => renderProvider[providerName as keyof Providers])}
                 </IconContainer>
