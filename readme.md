@@ -28,7 +28,7 @@ A 🛠️ React hooks library for implementing `zkLogin` 🔐 authentication and
 
 ### In Progress
 
-- [ ] add Twich OAuth
+- [ ] add Twitch OAuth
 
 ### Done ✓
 
