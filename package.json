@@ -1,6 +1,6 @@
 {
   "name": "@denyskozak/react-sui-zk-login-kit",
-  "version": "1.0.6",
+  "version": "1.0.10",
   "description": "A React kit for SUI zk login integration with components and hooks.",
   "repository": {
     "type": "git",
@@ -15,11 +15,12 @@
   ],
   "author": "Your Name denys.kozak.self@gmail.com",
   "license": "MIT",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "copyfiles -u 1 'src/**/*.svg' dist",
+    "publish-to-npm": "npm run build && npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [
@@ -37,6 +38,7 @@
   "devDependencies": {
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "copyfiles": "^2.4.1",
     "rollup": "^4.29.1",
     "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.7.2"
