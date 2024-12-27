@@ -27,14 +27,17 @@ A 🛠️ React hooks library for implementing `zkLogin` 🔐 authentication and
 ### Todo
 
 - [ ] make zero deps
+- [ ] add tests
+- [ ] record video instruction
 
 ### In Progress
 
-- [ ] add Twitch OAuth
+- [ ] add test environment
 
 ### Done ✓
 
 - [x] add Google OAuth 
-- [x] split up styles
+- [x] add Twitch OAuth
+- [x] publish npm package
 - [x] add hooks
 - [x] add component
