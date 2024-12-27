@@ -21,3 +21,18 @@ A 🛠️ React hooks library for implementing `zkLogin` 🔐 authentication and
 > useZkProof - Generates ZK proofs for secure authentication.
 
 > useTransactionExecution - Executes Sui transactions with ZK proofs.
+
+### Todo
+
+- [ ] make zero deps
+
+### In Progress
+
+- [ ] add Twich OAuth
+
+### Done ✓
+
+- [x] add Google OAuth 
+- [x] split up styles
+- [x] add hooks
+- [x] add component

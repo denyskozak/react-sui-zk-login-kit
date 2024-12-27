@@ -1,57 +1,14 @@
-import React, {ReactNode, use, useCallback, useEffect, useLayoutEffect, useMemo} from "react";
-import {Box, Button, IconButton} from "@mui/material";
-import GoogleIcon from "@mui/icons-material/Google"; // Replace with your icon or SVG
-import FacebookIcon from "@mui/icons-material/Facebook"; // Replace with your icon or SVG
-import TwitchIcon from "@mui/icons-material/SportsEsports"; // Replace with your icon or SVG
+import {useEffect, useLayoutEffect, useMemo} from "react";
+import {Button} from "@mui/material";
+import GoogleIcon from "./logos/google.svg"; // Replace with your icon or SVG
+import TwitchIcon from "./logos/twitch.svg"; // Replace with your icon or SVG
 import {useGoogleAuth} from "../../hooks/useGoogleAuth"; // Example of your hook
-import {SuiClient} from "@mysten/sui/client";
-import styled from '@emotion/styled';
 import {useEphemeralKeyPair, useJwt, useNonce, useUserSalt, useZkLoginAddress, useZkProof} from "../../hooks";
 import {Ed25519Keypair} from "@mysten/sui/keypairs/ed25519";
 import {getTokenFromUrl} from "../../utilities";
 import {getExtendedEphemeralPublicKey} from "@mysten/sui/zklogin";
 import {useZKLoginContext} from "../../hooks/useZKLoginContext";
-
-// Styled Components
-const Container = styled(Box)({
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    maxWidth: "400px",
-    maxHeight: "400px",
-    margin: "auto",
-    padding: "40px",
-    borderRadius: "12px",
-    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-    backgroundColor: "#fff",
-});
-
-const Typography = styled.span`
-    color: #000000;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-`;
-
-const IconContainer = styled(Box)({
-    display: "flex",
-    justifyContent: "center",
-    gap: "16px",
-    marginTop: "16px",
-});
-
-const MoreOptionsButton = styled(Button)({
-    marginTop: "20px",
-    backgroundColor: "#f5f5f5",
-    color: "#333",
-    borderRadius: "8px",
-    textTransform: "none",
-    padding: "8px 16px",
-    "&:hover": {
-        backgroundColor: "#e0e0e0",
-    },
-});
+import {TwitchIconImg, IconImg, Icon, IconContainer, Typography, Container} from './zk-login.styles';
 
 interface GoogleParams {
     redirectURI: string;
@@ -67,8 +24,6 @@ type Providers = {
     twitch?: TwitchParams
 };
 
-type RenderProviders = Record<keyof Providers, () => JSX.Element>;
-
 interface ZKLoginProps {
     providers: Providers;
     proverProvider: string;
@@ -80,7 +35,6 @@ interface ZKLoginProps {
     onJwtReceived?: (jwt: string) => void;
     onGenerateUserSaltClick?: (jwt: string) => void;
     observeTokenInURL?: boolean;
-
 }
 
 export const ZkLogin = (props: ZKLoginProps) => {
@@ -95,9 +49,10 @@ export const ZkLogin = (props: ZKLoginProps) => {
         userSalt,
         title = 'Sign In With Your Preferred Service'
     } = props;
+
     const {client: suiClient} = useZKLoginContext();
     const {handleRedirectToGoogle} = useGoogleAuth();
-    const {generateEphemeralKeyPair, loadEphemeralKeyPair, ephemeralKeyPair} = useEphemeralKeyPair();
+    const {generateEphemeralKeyPair, ephemeralKeyPair} = useEphemeralKeyPair();
     const {generateNonceValue, generateRandomnessValue, randomness, nonce} = useNonce();
     const {setJwtString, decodedJwt, encodedJwt} = useJwt();
     const {setUserSalt, userSalt: storedUserSalt} = useUserSalt();
@@ -168,7 +123,6 @@ export const ZkLogin = (props: ZKLoginProps) => {
 
     const handleGoogleLogin = () => {
         if (providers.google && nonce) {
-            console.log('nonce ', nonce)
             handleRedirectToGoogle(
                 providers.google.clientId,
                 providers.google.redirectURI,
@@ -179,30 +133,20 @@ export const ZkLogin = (props: ZKLoginProps) => {
 
     const renderProvider = {
         google: () => (
-            <IconButton
+            <Icon
                 key="google"
                 onClick={handleGoogleLogin}
-                style={{
-                    backgroundColor: "#f5f5f5",
-                    padding: "12px",
-                    borderRadius: "8px",
-                }}
             >
-                <GoogleIcon style={{fontSize: "32px"}}/>
-            </IconButton>
+                <IconImg src={GoogleIcon}/>
+            </Icon>
         ),
         twitch: () => (
-            <IconButton
+            <Icon
                 key="twitch"
                 onClick={handleGoogleLogin}
-                style={{
-                    backgroundColor: "#f5f5f5",
-                    padding: "12px",
-                    borderRadius: "8px",
-                }}
             >
-                <TwitchIcon style={{fontSize: "32px"}}/>
-            </IconButton>
+                <TwitchIconImg src={TwitchIcon}/>
+            </Icon>
         )
     };
 
