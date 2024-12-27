@@ -9,7 +9,7 @@ import {
     useZkLoginAddress,
     useZkProof,
     useTransactionExecution,
-    useGoogleAuth,
+    useOAuth,
     getTokenFromUrl,
 } from "../../src";
 import {useZKLoginContext} from "../../src/hooks/useZKLoginContext.ts";
@@ -42,7 +42,7 @@ export const ZKHooks = () => {
     const { userSalt, setUserSalt } = useUserSalt();
     const { zkLoginAddress, generateZkLoginAddress } = useZkLoginAddress();
     const { zkProof, loading: zkProofLoading, generateZkProof } = useZkProof();
-    const { handleRedirectToGoogle } = useGoogleAuth();
+    const {handleRedirectTo: handleRedirectToGoogle} = useOAuth('https://accounts.google.com/o/oauth2/v2/auth');
     const {
         executing,
         digest,

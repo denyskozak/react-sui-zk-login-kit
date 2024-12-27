@@ -1,4 +1,4 @@
-![welcome](./welcome.png)
+![welcome](https://raw.githubusercontent.com/denyskozak/react-sui-zk-login-kit/refs/heads/main/welcome.png)
 
 A 🛠️ React hooks library for implementing `zkLogin` 🔐 authentication and transaction flows on the **Sui blockchain**. This library provides modular, reusable hooks to handle ephemeral key management, nonce generation, JWT parsing, ZK proof generation, and more.
 

@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
-import {Box, Button} from "@mui/material";
 
-export const Container = styled(Box)({
+export const Container = styled.div({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -32,7 +31,7 @@ export const Code = styled.code`
     word-wrap: break-word;
 `;
 
-export const IconContainer = styled(Box)({
+export const IconContainer = styled.div({
     display: "flex",
     justifyContent: "center",
     gap: "16px",
@@ -60,7 +59,7 @@ export const TwitchIconImg = styled.img({
     width: 25, height: 25, margin: "auto",
 });
 
-export const MoreOptionsButton = styled(Button)({
+export const Button = styled.button({
     marginTop: "20px",
     backgroundColor: "#f5f5f5",
     color: "#333",
@@ -69,5 +68,6 @@ export const MoreOptionsButton = styled(Button)({
     padding: "8px 16px",
     "&:hover": {
         backgroundColor: "#e0e0e0",
+        borderColor: "#1a1a1a"
     },
 });

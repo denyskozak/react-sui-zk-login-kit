@@ -1,14 +1,11 @@
 import {useEffect, useLayoutEffect, useMemo} from "react";
-import {Button} from "@mui/material";
 import GoogleIcon from "./logos/google.svg"; // Replace with your icon or SVG
 import TwitchIcon from "./logos/twitch.svg"; // Replace with your icon or SVG
-import {useGoogleAuth} from "../../hooks/useGoogleAuth"; // Example of your hook
-import {useEphemeralKeyPair, useJwt, useNonce, useUserSalt, useZkLoginAddress, useZkProof} from "../../hooks";
-import {Ed25519Keypair} from "@mysten/sui/keypairs/ed25519";
+import {useOAuth, useEphemeralKeyPair, useJwt, useNonce, useUserSalt, useZkLoginAddress, useZkProof} from "../../hooks";
 import {getTokenFromUrl} from "../../utilities";
 import {getExtendedEphemeralPublicKey} from "@mysten/sui/zklogin";
 import {useZKLoginContext} from "../../hooks/useZKLoginContext";
-import {TwitchIconImg, IconImg, Icon, IconContainer, Typography, Container, Code} from './zk-login.styles';
+import {TwitchIconImg, IconImg, Icon, IconContainer, Typography, Container, Code, Button} from './zk-login.styles';
 
 interface GoogleParams {
     redirectURI: string;
@@ -17,6 +14,8 @@ interface GoogleParams {
 }
 
 interface TwitchParams {
+    redirectURI: string;
+    clientId: string;
 }
 
 type Providers = {
@@ -30,21 +29,12 @@ interface ZKLoginProps {
     title?: string;
     subTitle?: string;
     userSalt?: string;
-    // hooks
-    onKeypairReceived?: (keypair: Ed25519Keypair) => void;
-    onNonceReceived?: (nonce: string) => void;
-    onJwtReceived?: (jwt: string) => void;
-    onGenerateUserSaltClick?: (jwt: string) => void;
     observeTokenInURL?: boolean;
 }
 
 export const ZkLogin = (props: ZKLoginProps) => {
     const {
         providers,
-        onKeypairReceived,
-        onNonceReceived,
-        onGenerateUserSaltClick,
-        onJwtReceived,
         observeTokenInURL = true,
         proverProvider,
         userSalt,
@@ -53,26 +43,48 @@ export const ZkLogin = (props: ZKLoginProps) => {
     } = props;
 
     const {client: suiClient} = useZKLoginContext();
-    const {handleRedirectToGoogle} = useGoogleAuth();
+    const {handleRedirectTo: handleRedirectToGoogle} = useOAuth('https://accounts.google.com/o/oauth2/v2/auth');
+    const {handleRedirectTo: handleRedirectToTwitch} = useOAuth('https://id.twitch.tv/oauth2/authorize');
     const {generateEphemeralKeyPair, ephemeralKeyPair} = useEphemeralKeyPair();
     const {generateNonceValue, generateRandomnessValue, randomness, nonce} = useNonce();
-    const {setJwtString, decodedJwt, encodedJwt} = useJwt();
-    const {setUserSalt, userSalt: storedUserSalt} = useUserSalt();
+    const {setJwtString, encodedJwt} = useJwt();
+    const {setUserSalt} = useUserSalt();
     const {generateZkLoginAddress, zkLoginAddress} = useZkLoginAddress();
-    const {zkProof, loading: zkProofLoading, generateZkProof} = useZkProof();
+    const {loading: zkProofLoading, generateZkProof} = useZkProof();
 
+    // Step 1
+    useEffect(() => {
+        if (!ephemeralKeyPair) generateEphemeralKeyPair();
+    }, []);
+
+    // Step 2
+    useLayoutEffect(() => {
+        const generateRandomnessAndNonce = async () => {
+            if (ephemeralKeyPair && !randomness && !nonce) {
+                const randomValue = generateRandomnessValue();
+                const {epoch} = await suiClient.getLatestSuiSystemState();
+
+                const maxEpoch = Number(epoch) + 2; // live 2 epochs
+                generateNonceValue(ephemeralKeyPair.getSecretKey(), randomValue, maxEpoch);
+            }
+        };
+
+        generateRandomnessAndNonce().catch((error) => console.error('Error init ZK Login component', error));
+    }, [ephemeralKeyPair]);
+
+    // Step 3
     useEffect(() => {
         if (observeTokenInURL && window && window.location.hash) {
             const token = getTokenFromUrl();
 
             if (token) {
                 setJwtString(token);
-                onJwtReceived?.(token)
                 window.location.hash = '';
             }
         }
     }, []);
 
+    // Step 4
     useEffect(() => {
         const zkProof = async () => {
             if (userSalt && encodedJwt && ephemeralKeyPair) {
@@ -102,25 +114,6 @@ export const ZkLogin = (props: ZKLoginProps) => {
         zkProof().catch((error) => console.error('Error User Salt Proof ZK Login component', error));
     }, [userSalt]);
 
-    useEffect(() => {
-        if (!ephemeralKeyPair) generateEphemeralKeyPair();
-    }, []);
-
-    useLayoutEffect(() => {
-        const generateRandomnessAndNonce = async () => {
-            if (ephemeralKeyPair && !randomness && !nonce) {
-                const randomValue = generateRandomnessValue();
-                const {epoch} = await suiClient.getLatestSuiSystemState();
-
-                const maxEpoch = Number(epoch) + 2; // live 2 epochs
-                const newNonce = generateNonceValue(ephemeralKeyPair.getSecretKey(), randomValue, maxEpoch);
-                onNonceReceived?.(newNonce);
-            }
-        };
-
-        generateRandomnessAndNonce().catch((error) => console.error('Error init ZK Login component', error));
-    }, [ephemeralKeyPair]);
-
     const providerList = useMemo(() => Object.entries(providers), [providers]);
 
     const handleGoogleLogin = () => {
@@ -133,8 +126,18 @@ export const ZkLogin = (props: ZKLoginProps) => {
         }
     };
 
+    const handleTwitchLogin = () => {
+        if (providers.twitch && nonce) {
+            handleRedirectToTwitch(
+                providers.twitch.clientId,
+                providers.twitch.redirectURI,
+                nonce
+            );
+        }
+    };
+
     const renderProvider = {
-        google: () => (
+        google: (
             <Icon
                 key="google"
                 onClick={handleGoogleLogin}
@@ -142,18 +145,15 @@ export const ZkLogin = (props: ZKLoginProps) => {
                 <IconImg src={GoogleIcon}/>
             </Icon>
         ),
-        twitch: () => (
+        twitch: (
             <Icon
                 key="twitch"
-                onClick={handleGoogleLogin}
+                onClick={handleTwitchLogin}
             >
                 <TwitchIconImg src={TwitchIcon}/>
             </Icon>
         )
     };
-
-    const icons = () => providerList.map(([id]) => renderProvider[id as keyof Providers]?.());
-
 
     return (
         <Container>
@@ -189,7 +189,7 @@ export const ZkLogin = (props: ZKLoginProps) => {
 
             {!zkLoginAddress && !zkProofLoading && (
                 <IconContainer>
-                    {icons()}
+                    {providerList.map(([providerName]) => renderProvider[providerName as keyof Providers])}
                 </IconContainer>
             )}
         </Container>

@@ -1,4 +1,3 @@
-import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
 import {JwtPayload} from "jwt-decode";
 import {ZkProof} from "../types/zf-proof";
 

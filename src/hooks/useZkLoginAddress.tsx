@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { jwtToAddress } from "@mysten/sui/zklogin";
 
 import { useZKLoginContext } from "./useZKLoginContext";
