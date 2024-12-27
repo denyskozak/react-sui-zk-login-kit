@@ -1,4 +1,4 @@
-import {useJwt, ZkLogin} from "../../src";
+import {useJwt, ZKLogin} from "../../src";
 import {useEffect, useState} from "react";
 import {generateRandomness} from "@mysten/sui/zklogin";
 
@@ -40,7 +40,7 @@ export const ZKComponent = () => {
 
     return (
         <div>
-            <ZkLogin
+            <ZKLogin
                 providers={providers}
                 userSalt={userSalt}
                 proverProvider={SUI_PROVER_ENDPOINT}

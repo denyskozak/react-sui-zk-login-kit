@@ -32,7 +32,7 @@ interface ZKLoginProps {
     observeTokenInURL?: boolean;
 }
 
-export const ZkLogin = (props: ZKLoginProps) => {
+export const ZKLogin = (props: ZKLoginProps) => {
     const {
         providers,
         observeTokenInURL = true,
