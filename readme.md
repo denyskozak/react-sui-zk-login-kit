@@ -1,6 +1,6 @@
-![NPM Version](https://img.shields.io/npm/v/%40denyskozak%2Freact-sui-zk-login-kit?link=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40denyskozak%2Freact-sui-zk-login-kit)
+[![NPM Version](https://img.shields.io/npm/v/%40denyskozak%2Freact-sui-zk-login-kit?link=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40denyskozak%2Freact-sui-zk-login-kit)](https://www.npmjs.com/package/@denyskozak/react-sui-zk-login-kit)
 
-![welcome](https://raw.githubusercontent.com/denyskozak/react-sui-zk-login-kit/refs/heads/main/welcome.png)
+[![welcome](https://raw.githubusercontent.com/denyskozak/react-sui-zk-login-kit/refs/heads/main/welcome.png)](https://www.npmjs.com/package/@denyskozak/react-sui-zk-login-kit)
 
 A 🛠️ React hooks library for implementing `zkLogin` 🔐 authentication and transaction flows on the **Sui blockchain**. This library provides modular, reusable hooks to handle ephemeral key management, nonce generation, JWT parsing, ZK proof generation, and more.
 
