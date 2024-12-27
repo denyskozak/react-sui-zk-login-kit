@@ -6,10 +6,11 @@ export const Container = styled(Box)({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    maxWidth: "400px",
-    maxHeight: "400px",
+    minWidth: "200px",
+    maxWidth: "320px",
+    maxHeight: "320px",
     margin: "auto",
-    padding: "40px",
+    padding: "24px",
     borderRadius: "12px",
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
     backgroundColor: "#fff",
@@ -19,7 +20,16 @@ export const Typography = styled.span`
     color: #000000;
     width: 100%;
     padding: 0;
-    margin: 0;
+    margin: 5px 0;
+`;
+
+export const Code = styled.code`
+    color: #000000;
+    width: 100%;
+    padding: 0;
+    margin: 5px 0;
+    font-size: 10px;
+    word-wrap: break-word;
 `;
 
 export const IconContainer = styled(Box)({

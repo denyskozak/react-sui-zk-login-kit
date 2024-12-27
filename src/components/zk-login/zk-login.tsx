@@ -8,7 +8,7 @@ import {Ed25519Keypair} from "@mysten/sui/keypairs/ed25519";
 import {getTokenFromUrl} from "../../utilities";
 import {getExtendedEphemeralPublicKey} from "@mysten/sui/zklogin";
 import {useZKLoginContext} from "../../hooks/useZKLoginContext";
-import {TwitchIconImg, IconImg, Icon, IconContainer, Typography, Container} from './zk-login.styles';
+import {TwitchIconImg, IconImg, Icon, IconContainer, Typography, Container, Code} from './zk-login.styles';
 
 interface GoogleParams {
     redirectURI: string;
@@ -28,6 +28,7 @@ interface ZKLoginProps {
     providers: Providers;
     proverProvider: string;
     title?: string;
+    subTitle?: string;
     userSalt?: string;
     // hooks
     onKeypairReceived?: (keypair: Ed25519Keypair) => void;
@@ -47,7 +48,8 @@ export const ZkLogin = (props: ZKLoginProps) => {
         observeTokenInURL = true,
         proverProvider,
         userSalt,
-        title = 'Sign In With Your Preferred Service'
+        title = 'Sign In With',
+        subTitle = 'Your Preferred Service'
     } = props;
 
     const {client: suiClient} = useZKLoginContext();
@@ -152,11 +154,19 @@ export const ZkLogin = (props: ZKLoginProps) => {
 
     const icons = () => providerList.map(([id]) => renderProvider[id as keyof Providers]?.());
 
+
     return (
         <Container>
-            <Typography>
-                {title}
-            </Typography>
+            {!zkLoginAddress && (
+                <>
+                    <Typography>
+                        {title}
+                    </Typography>
+                    <Typography>
+                        {subTitle}
+                    </Typography>
+                </>
+            )}
 
             {/*If have JWT and no userSalt*/}
             {zkProofLoading && (
@@ -166,18 +176,18 @@ export const ZkLogin = (props: ZKLoginProps) => {
             )}
 
             {/*If have JWT and userSalt*/}
-            {decodedJwt && storedUserSalt && zkLoginAddress && (
+            {zkLoginAddress && (
                 <>
                     <Typography>
                         Your
-                        address: <Typography>...{String(zkLoginAddress).slice(zkLoginAddress.length / 2, zkLoginAddress.length)}</Typography>
+                        address: <Code>{zkLoginAddress}</Code>
                     </Typography>
                     <Button onClick={() => navigator.clipboard.writeText(zkLoginAddress)}>Copy Address</Button>
                 </>
             )}
 
 
-            {!zkLoginAddress && (
+            {!zkLoginAddress && !zkProofLoading && (
                 <IconContainer>
                     {icons()}
                 </IconContainer>
