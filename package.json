@@ -1,5 +1,5 @@
 {
-  "name": "@denyskozak/react-sui-zk-login-kit",
+  "name": "react-sui-zk-login-kit",
   "version": "1.0.13",
   "description": "A React kit for SUI zk login integration with components and hooks.",
   "repository": {
@@ -8,10 +8,27 @@
   },
   "keywords": [
     "react",
+    "react hooks",
     "sui",
+    "sui components",
     "zk-login",
-    "hooks",
-    "components"
+    "zk login",
+    "zklogin",
+    "sui zklogin",
+    "sui zk-login",
+    "web3",
+    "web3 login",
+    "authentication",
+    "auth hooks",
+    "react components",
+    "decentralized login",
+    "blockchain authentication",
+    "zero knowledge",
+    "zero knowledge login",
+    "zero knowledge authentication",
+    "sui blockchain",
+    "react sui",
+    "login components"
   ],
   "author": "Your Name denys.kozak.self@gmail.com",
   "license": "MIT",
