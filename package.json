@@ -46,7 +46,6 @@
   ],
   "dependencies": {
     "@emotion/styled": "^11.14.0",
-    "@mysten/bcs": "^1.2.0",
     "@mysten/sui": "^1.17.0",
     "axios": "^1.7.9",
     "jwt-decode": "^4.0.0",
