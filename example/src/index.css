@@ -28,6 +28,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #030f1c66;
 }
 
 h1 {
@@ -65,4 +66,11 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.copy-box{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border: 1px solid #216C17;
 }

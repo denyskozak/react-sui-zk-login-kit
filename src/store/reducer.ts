@@ -21,6 +21,8 @@ export const zkLoginReducer = (state: ZKLoginState, action: ZKLoginAction): ZKLo
             return {...state, zkProof: action.payload};
         case "SET_TRANSACTION_DIGEST":
             return {...state, transactionDigest: action.payload};
+        case "RESET":
+            return {...initialZKLoginState};
         default:
             return {...state};
     }

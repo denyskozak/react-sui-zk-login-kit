@@ -20,6 +20,7 @@ export const Typography = styled.span`
     width: 100%;
     padding: 0;
     margin: 5px 0;
+    text-align: center;
 `;
 
 export const Code = styled.code`

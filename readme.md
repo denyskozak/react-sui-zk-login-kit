@@ -1,4 +1,9 @@
 [![NPM Version](https://img.shields.io/npm/v/react-sui-zk-login-kit)](https://www.npmjs.com/package/react-sui-zk-login-kit)
+<div align="center">
+
+## ✨ [**Link to Demo**](https://demo.react-sui-zk-login.com) ✨
+
+</div>
 
 [![welcome](https://raw.githubusercontent.com/denyskozak/react-sui-zk-login-kit/refs/heads/main/welcome.png)](https://www.npmjs.com/package/react-sui-zk-login-kit)
 

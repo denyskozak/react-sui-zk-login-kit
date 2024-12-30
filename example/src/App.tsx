@@ -1,4 +1,3 @@
-import './App.css'
 // import {ZKHooks} from "./ZKHooks.tsx";
 import {ZKComponent} from "./ZKComponent.tsx";
 import { ZKLoginProvider } from '../../src';

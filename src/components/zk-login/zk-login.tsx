@@ -55,7 +55,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
     // Step 1
     useEffect(() => {
         if (!ephemeralKeyPair) generateEphemeralKeyPair();
-    }, []);
+    }, [ephemeralKeyPair]);
 
     // Step 2
     useLayoutEffect(() => {

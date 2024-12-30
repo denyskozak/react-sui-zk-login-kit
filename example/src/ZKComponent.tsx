@@ -1,23 +1,29 @@
-import {useJwt, ZKLogin} from "../../src";
+import {useJwt, useLogout, useZkLoginAddress, ZKLogin} from "../../src";
 import {useEffect, useState} from "react";
 import {generateRandomness} from "@mysten/sui/zklogin";
+import {Box, Button, Stack, Typography} from "@mui/material";
+import backgroundImage from "./assets/bg.webp";
+import {CopyToClipboard} from "./components/CopyToClipboard.tsx";
+import {GitHub} from "@mui/icons-material";
 
 // Example configuration
 const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
 
 const providers = {
     google: {
-        clientId: "648851101099-70tn7ksk6207uutiikv4d5783o0tmpmo.apps.googleusercontent.com",
-        redirectURI: "http://localhost:5173/",
+        clientId: "648851101099-uit5tqa2gf0nr1vvpjorc87k2u4minip.apps.googleusercontent.com",
+        redirectURI: "https://demo.react-sui-zk-login.com",
     },
     twitch: {
         clientId: "ltu7mhvfj4l04maulcjcqx1wm5e5zh",
-        redirectURI: "http://localhost:5173",
+        redirectURI: "https://demo.react-sui-zk-login.com",
     }
 }
 
 export const ZKComponent = () => {
     const {encodedJwt} = useJwt();
+    const {logout} = useLogout();
+    const {zkLoginAddress} = useZkLoginAddress();
     const [userSalt, setUserSalt] = useState('');
 
     useEffect(() => {
@@ -39,12 +45,49 @@ export const ZKComponent = () => {
     }, [encodedJwt]);
 
     return (
-        <div>
-            <ZKLogin
-                providers={providers}
-                userSalt={userSalt}
-                proverProvider={SUI_PROVER_ENDPOINT}
-            />
-        </div>
+        <Box>
+            <Box sx={{
+                width: "100vw",
+                height: "100vh",
+                display: "flex",
+                justifyContent: "center",
+            }}>
+                <Box sx={{position: 'absolute', bottom: 20}}>
+                    <CopyToClipboard/>
+                </Box>
+                <Box sx={{position: 'absolute', left: 20, top: 20}}>
+                    <Button sx={{color: 'white'}} onClick={() => {
+                        window.open('https://github.com/denyskozak/react-sui-zk-login-kit', '_blank')
+                    }}>
+                        <GitHub/>
+                    </Button>
+                </Box>
+                {zkLoginAddress && <Box sx={{position: 'absolute', right: 20, top: 20}}>
+                    <Button sx={{color: 'white'}} onClick={() => {
+                        logout();
+                    }}>
+                        Logout
+                    </Button>
+                </Box>}
+                <Stack spacing={4} alignItems="center"
+                       sx={{
+                           backgroundImage: `url(${backgroundImage})`,
+                           backgroundRepeat: "no-repeat",
+                           backgroundSize: "cover",
+                           width: "100%",
+                           height: '600px',
+                           justifyContent: "center",
+                           margin: 'auto'
+                       }}
+                >
+                    <Typography variant="h2" sx={{fontWeight: 500}}>React Sui ZK Login Kit</Typography>
+                    <ZKLogin
+                        providers={providers}
+                        userSalt={userSalt}
+                        proverProvider={SUI_PROVER_ENDPOINT}
+                    />
+                </Stack>
+            </Box>
+        </Box>
     )
 }

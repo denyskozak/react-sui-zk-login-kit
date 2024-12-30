@@ -34,4 +34,5 @@ export type ZKLoginAction =
     | { type: "DELETE_USER_SALT"; }
     | { type: "SET_ZK_LOGIN_ADDRESS"; payload: string }
     | { type: "SET_ZK_PROOF"; payload: ZkProof }
+    | { type: "RESET"; }
     | { type: "SET_TRANSACTION_DIGEST"; payload: string };
