@@ -29,6 +29,8 @@ A 🛠️ React hooks library for implementing `zkLogin` 🔐 authentication and
 
 > useTransactionExecution - Executes Sui transactions with ZK proofs.
 
+> useLogout - Logout user and clear session storage.
+
 ### Todo
 
 - [ ] make zero deps
