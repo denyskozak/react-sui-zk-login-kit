@@ -6,6 +6,12 @@
     "type": "git",
     "url": "https://github.com/denyskozak/react-sui-zk-login-kit"
   },
+  "scripts": {
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "copyfiles -u 1 'src/**/*.svg' dist",
+    "publish-to-npm": "npm run build && npm publish --access public",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "keywords": [
     "react",
     "react hooks",
@@ -34,12 +40,6 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc && npm run copy-assets",
-    "copy-assets": "copyfiles -u 1 'src/**/*.svg' dist",
-    "publish-to-npm": "npm run build && npm publish --access public",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "files": [
     "dist",
     "README.md"
