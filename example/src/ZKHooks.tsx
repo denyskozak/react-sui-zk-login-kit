@@ -46,7 +46,6 @@ export const ZKHooks = () => {
     const {
         executing,
         digest,
-        executeTransaction,
     } = useTransactionExecution();
 
     useEffect(() => {
@@ -121,9 +120,6 @@ export const ZKHooks = () => {
     const handleExecuteTransaction = async () => {
         if (ephemeralKeyPair && zkProof) {
             // Example transaction block
-            const transactionBlock = new Uint8Array([/* Transaction block data */]);
-            const signature = '';
-            await executeTransaction(transactionBlock, signature);
         }
     };
 
