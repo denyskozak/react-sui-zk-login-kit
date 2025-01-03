@@ -1,21 +1,24 @@
 import {useState} from "react";
 import {useZKLoginContext} from "./useZKLoginContext";
+import {useEphemeralKeyPair} from "./useEphemeralKeyPair";
 
 export const useTransactionExecution = () => {
     const [executing, setExecuting] = useState(false);
     const [digest, setDigest] = useState<string | null>(null);
     const { client: suiClient } = useZKLoginContext();
+    const { ephemeralKeyPair } = useEphemeralKeyPair();
 
     const executeTransaction = async (
-        transactionBlock: Uint8Array,
-        signature: string
+        transaction: Uint8Array,
     ) => {
         setExecuting(true);
         try {
-            const response = await suiClient.executeTransactionBlock({
-                transactionBlock,
-                signature,
+            if (!ephemeralKeyPair) throw new Error('No ephemeralKeyPair setup')
+            const response = await suiClient.signAndExecuteTransaction({
+                transaction,
+                signer: ephemeralKeyPair,
             });
+
             setDigest(response.digest);
         } catch (error) {
             console.error("Transaction execution error:", error);

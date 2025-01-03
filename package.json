@@ -1,6 +1,6 @@
 {
   "name": "react-sui-zk-login-kit",
-  "version": "1.0.15",
+  "version": "1.0.17",
   "description": "A React kit for SUI zk login integration with components and hooks.",
   "repository": {
     "type": "git",
@@ -55,8 +55,6 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "copyfiles": "^2.4.1",
-    "rollup": "^4.29.1",
-    "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.7.2"
   },
   "peerDependencies": {

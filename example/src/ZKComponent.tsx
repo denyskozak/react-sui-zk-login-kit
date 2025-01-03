@@ -22,8 +22,9 @@ const providers = {
 
 export const ZKComponent = () => {
     const {encodedJwt} = useJwt();
-    const {logout} = useLogout();
     const {zkLoginAddress} = useZkLoginAddress();
+    const {logout} = useLogout();
+
     const [userSalt, setUserSalt] = useState('');
 
     useEffect(() => {
