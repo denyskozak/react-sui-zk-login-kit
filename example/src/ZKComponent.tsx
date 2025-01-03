@@ -5,6 +5,7 @@ import {Box, Button, Stack, Typography} from "@mui/material";
 import backgroundImage from "./assets/bg.webp";
 import {CopyToClipboard} from "./components/CopyToClipboard.tsx";
 import {GitHub} from "@mui/icons-material";
+import {ExecuteTx} from "./components/ExecuteTx.tsx";
 
 // Example configuration
 const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
@@ -12,11 +13,11 @@ const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
 const providers = {
     google: {
         clientId: "648851101099-uit5tqa2gf0nr1vvpjorc87k2u4minip.apps.googleusercontent.com",
-        redirectURI: "https://demo.react-sui-zk-login.com",
+        redirectURI: "http://localhost:5173",
     },
     twitch: {
         clientId: "ltu7mhvfj4l04maulcjcqx1wm5e5zh",
-        redirectURI: "https://demo.react-sui-zk-login.com",
+        redirectURI: "http://localhost:5173",
     }
 }
 
@@ -63,6 +64,9 @@ export const ZKComponent = () => {
                         <GitHub/>
                     </Button>
                 </Box>
+                <Box sx={{position: 'absolute', left: 100, top: 30}}>
+                    <Typography>Dev Network</Typography>
+                </Box>
                 {zkLoginAddress && <Box sx={{position: 'absolute', right: 20, top: 20}}>
                     <Button sx={{color: 'white'}} onClick={() => {
                         logout();
@@ -87,6 +91,9 @@ export const ZKComponent = () => {
                         userSalt={userSalt}
                         proverProvider={SUI_PROVER_ENDPOINT}
                     />
+                    {zkLoginAddress && (
+                        <ExecuteTx address={zkLoginAddress}/>
+                    )}
                 </Stack>
             </Box>
         </Box>
