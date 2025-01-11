@@ -143,18 +143,6 @@ export const Content = () => {
 
 ---
 
-### Error Handling
-
-All asynchronous operations may throw errors. Common errors include:
-
-- Network issues
-- Invalid JWT tokens
-- Failed ZK proof generation
-
-Ensure proper error handling for a robust user experience.
-
----
-
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request with detailed descriptions of your
@@ -165,7 +153,7 @@ changes.
 ## About
 
 Developed with ❤️ by [Denys Kozak](https://github.com/denyskozak). Donations are appreciated at
-`0x66aaa7eac8a801e6eab665cb9b9127e4f41bd10455606091088235f89cbb149b`.
+`0xca98eb8f5f149968380e6c4ef01ec790ac5e809b80f7f915aed5db947c2f3a95`
 
 ---
 
