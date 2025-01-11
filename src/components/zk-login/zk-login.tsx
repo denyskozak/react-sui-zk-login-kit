@@ -1,4 +1,4 @@
-import {useEffect, useLayoutEffect, useMemo} from "react";
+import {useEffect, useLayoutEffect, useMemo, useState} from "react";
 import GoogleIcon from "./logos/google.svg"; // Replace with your icon or SVG
 import TwitchIcon from "./logos/twitch.svg"; // Replace with your icon or SVG
 import {useOAuth, useEphemeralKeyPair, useJwt, useNonce, useUserSalt, useZkLoginAddress, useZkProof} from "../../hooks";
@@ -31,6 +31,11 @@ interface ZKLoginProps {
     observeTokenInURL?: boolean;
 }
 
+function removeHash() {
+    history.pushState("", document.title, window.location.pathname
+        + window.location.search);
+}
+
 export const ZKLogin = (props: ZKLoginProps) => {
     const {
         providers,
@@ -43,17 +48,19 @@ export const ZKLogin = (props: ZKLoginProps) => {
     const {client: suiClient} = useZKLoginContext();
     const {handleRedirectTo: handleRedirectToGoogle} = useOAuth('https://accounts.google.com/o/oauth2/v2/auth');
     const {handleRedirectTo: handleRedirectToTwitch} = useOAuth('https://id.twitch.tv/oauth2/authorize');
-    const {generateEphemeralKeyPair, ephemeralKeyPair} = useEphemeralKeyPair();
+    const {generateEphemeralKeyPair, ephemeralKeyPair, ephemeralKeySecret} = useEphemeralKeyPair();
     const {generateNonceValue, generateRandomnessValue, randomness, nonce} = useNonce();
     const {setJwtString, encodedJwt} = useJwt();
     const {setUserSalt, userSalt} = useUserSalt();
     const {generateZkLoginAddress, zkLoginAddress} = useZkLoginAddress();
-    const {loading: zkProofLoading, generateZkProof} = useZkProof();
+    const {generateZkProof} = useZkProof();
+
+    const [loading, setLoading] = useState(false);
 
     // Step 1
     useEffect(() => {
-        if (!ephemeralKeyPair) generateEphemeralKeyPair();
-    }, [ephemeralKeyPair]);
+        if (!ephemeralKeySecret) generateEphemeralKeyPair();
+    }, [ephemeralKeySecret]);
 
     // Step 2
     useLayoutEffect(() => {
@@ -74,10 +81,8 @@ export const ZKLogin = (props: ZKLoginProps) => {
     useEffect(() => {
         if (observeTokenInURL && window && window.location.hash) {
             const token = getTokenFromUrl();
-
             if (token) {
                 setJwtString(token);
-                window.location.hash = '';
             }
         }
     }, []);
@@ -86,6 +91,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
     useEffect(() => {
         const zkProof = async () => {
             if (userSalt && encodedJwt && ephemeralKeyPair) {
+                setLoading(true);
                 const extendedPublicKey = getExtendedEphemeralPublicKey(
                     ephemeralKeyPair.getPublicKey()
                 );
@@ -103,14 +109,15 @@ export const ZKLogin = (props: ZKLoginProps) => {
                 });
 
                 if (result && result.proofPoints) {
-                    setUserSalt(userSalt);
                     generateZkLoginAddress(encodedJwt, userSalt);
+                    setLoading(false);
+                    removeHash();
                 }
             }
         };
 
         zkProof().catch((error) => console.error('Error User Salt Proof ZK Login component', error));
-    }, [userSalt]);
+    }, [setUserSalt, userSalt, ephemeralKeyPair]);
 
     const providerList = useMemo(() => Object.entries(providers), [providers]);
 
@@ -167,7 +174,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
             )}
 
             {/*If have JWT and no userSalt*/}
-            {zkProofLoading && (
+            {loading && (
                 <Typography>
                     Loading ZK Proof ...
                 </Typography>

@@ -42,7 +42,7 @@ export const Content = () => {
             // set userSalt for start auth process
             requestMock.then(salt => setUserSalt(String(salt)))
         }
-    }, [encodedJwt]);
+    }, [setUserSalt, encodedJwt]);
 
     return (
         <Box>
@@ -72,22 +72,21 @@ export const Content = () => {
                         Logout
                     </Button>
                 </Box>}
+                <Box sx={{ position: 'absolute', top: address ? '5%' : '15%'}}>
+                    <Typography variant="h2" sx={{fontWeight: 500}}>React Sui ZK Login Kit</Typography>
+                </Box>
                 <Stack alignItems="center"
                        sx={{
                            backgroundImage: `url(${backgroundImage})`,
                            backgroundRepeat: "no-repeat",
                            backgroundSize: "cover",
                            width: "100%",
-                           height: '600px',
+                           height: address ? 500 : 300,
                            justifyContent: "center",
                            margin: 'auto',
                            position: 'relative'
                        }}
                 >
-                    <Box sx={{ position: 'absolute', top: '10%'}}>
-                        <Typography variant="h2" sx={{fontWeight: 500}}>React Sui ZK Login Kit</Typography>
-
-                    </Box>
                     {/*ZK LOGIN COMPONENT*/}
                     <ZKLogin
                         providers={providers}

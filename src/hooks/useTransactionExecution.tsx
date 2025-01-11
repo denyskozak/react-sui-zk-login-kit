@@ -1,23 +1,23 @@
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import {useZKLoginContext} from "./useZKLoginContext";
 import {useEphemeralKeyPair} from "./useEphemeralKeyPair";
-import { Transaction } from "@mysten/sui/transactions";
+import {Transaction} from "@mysten/sui/transactions";
 import {useJwt} from "./useJwt";
-import { genAddressSeed, getZkLoginSignature } from "@mysten/sui/zklogin";
+import {genAddressSeed, getZkLoginSignature} from "@mysten/sui/zklogin";
 import {useUserSalt} from "./useUserSalt";
 import {useZkProof} from "./useZkProof";
 
 export const useTransactionExecution = () => {
     const [executing, setExecuting] = useState(false);
     const [digest, setDigest] = useState<string | null>(null);
-    const { client } = useZKLoginContext();
+    const {client} = useZKLoginContext();
 
-    const { decodedJwt } = useJwt();
-    const { userSalt } = useUserSalt();
-    const { zkProof } = useZkProof();
-    const { ephemeralKeyPair } = useEphemeralKeyPair();
+    const {decodedJwt} = useJwt();
+    const {userSalt} = useUserSalt();
+    const {zkProof} = useZkProof();
+    const {ephemeralKeyPair} = useEphemeralKeyPair();
 
-    const executeTransaction = async (
+    const executeTransaction = useCallback(async (
         transaction: Transaction,
     ): Promise<string | void> => {
 
@@ -27,7 +27,7 @@ export const useTransactionExecution = () => {
             if (!decodedJwt) throw new Error('No decodedJwt setup');
             if (!zkProof) throw new Error('No zkProof setup');
 
-            const { bytes, signature: userSignature } = await transaction.sign({
+            const {bytes, signature: userSignature} = await transaction.sign({
                 client,
                 signer: ephemeralKeyPair, // This must be the same ephemeral key pair used in the ZKP request
             });
@@ -39,7 +39,7 @@ export const useTransactionExecution = () => {
                 String(decodedJwt.aud),
             ).toString();
 
-            const { epoch } = await client.getLatestSuiSystemState();
+            const {epoch} = await client.getLatestSuiSystemState();
 
             const maxEpoch = Number(epoch) + 2; // live 2 epochs
 
@@ -56,7 +56,7 @@ export const useTransactionExecution = () => {
                 transactionBlock: bytes,
                 signature: zkLoginSignature,
             });
-            await client.waitForTransaction({ digest: result.digest });
+            await client.waitForTransaction({digest: result.digest});
 
             setDigest(result.digest);
 
@@ -66,7 +66,7 @@ export const useTransactionExecution = () => {
         } finally {
             setExecuting(false);
         }
-    };
+    }, [decodedJwt, userSalt, zkProof, ephemeralKeyPair]);
 
     return {
         executing,

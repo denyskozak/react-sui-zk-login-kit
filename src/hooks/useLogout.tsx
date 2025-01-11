@@ -1,11 +1,12 @@
-import { useZKLoginContext } from "./useZKLoginContext";
+import {useZKLoginContext} from "./useZKLoginContext";
+import {useCallback} from "react";
 
 export const useLogout = () => {
-    const { dispatch } = useZKLoginContext();
+    const {dispatch} = useZKLoginContext();
 
-    const logout = () => {
-        dispatch({ type: "RESET" });
-    };
+    const logout = useCallback(() => {
+        dispatch({type: "RESET"});
+    }, []);
 
     return {
         logout,
