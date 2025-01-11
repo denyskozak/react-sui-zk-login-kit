@@ -68,6 +68,9 @@ button:focus-visible {
   }
 }
 
+div {
+  margin: 0;
+}
 .copy-box{
   display: flex;
   align-items: flex-start;

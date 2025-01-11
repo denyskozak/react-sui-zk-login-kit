@@ -1,6 +1,7 @@
 {
   "name": "react-sui-zk-login-kit",
   "version": "1.0.20",
+  "type": "module",
   "description": "A React kit for SUI zk login integration with components and hooks.",
   "repository": {
     "type": "git",

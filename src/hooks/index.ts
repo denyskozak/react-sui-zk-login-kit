@@ -7,3 +7,4 @@ export * from "./useZkLoginAddress";
 export * from "./useZkProof";
 export * from "./useTransactionExecution";
 export * from "./useLogout";
+export * from "./useZKLogin";

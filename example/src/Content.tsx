@@ -1,11 +1,12 @@
-import {useJwt, useLogout, useZkLoginAddress, ZKLogin} from "../../src";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {generateRandomness} from "@mysten/sui/zklogin";
 import {Box, Button, Stack, Typography} from "@mui/material";
-import backgroundImage from "./assets/bg.webp";
-import {CopyToClipboard} from "./components/CopyToClipboard.tsx";
 import {GitHub} from "@mui/icons-material";
 import {ExecuteTx} from "./components/ExecuteTx.tsx";
+import {CopyToClipboard} from "./components/CopyToClipboard.tsx";
+import {ZKLogin, useZKLogin} from "../../src";
+
+import backgroundImage from "./assets/bg.webp";
 
 // Example configuration
 const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
@@ -21,12 +22,8 @@ const providers = {
     }
 }
 
-export const ZKComponent = () => {
-    const {encodedJwt} = useJwt();
-    const {zkLoginAddress} = useZkLoginAddress();
-    const {logout} = useLogout();
-
-    const [userSalt, setUserSalt] = useState('');
+export const Content = () => {
+    const {encodedJwt, setUserSalt, address, logout} = useZKLogin();
 
     useEffect(() => {
         // if we have jwt we can do request on your server
@@ -42,6 +39,7 @@ export const ZKComponent = () => {
                     )
             );
 
+            // set userSalt for start auth process
             requestMock.then(salt => setUserSalt(String(salt)))
         }
     }, [encodedJwt]);
@@ -67,14 +65,14 @@ export const ZKComponent = () => {
                 <Box sx={{position: 'absolute', left: 100, top: 30}}>
                     <Typography>Dev Network</Typography>
                 </Box>
-                {zkLoginAddress && <Box sx={{position: 'absolute', right: 20, top: 20}}>
+                {address && <Box sx={{position: 'absolute', right: 20, top: 20}}>
                     <Button sx={{color: 'white'}} onClick={() => {
                         logout();
                     }}>
                         Logout
                     </Button>
                 </Box>}
-                <Stack spacing={4} alignItems="center"
+                <Stack alignItems="center"
                        sx={{
                            backgroundImage: `url(${backgroundImage})`,
                            backgroundRepeat: "no-repeat",
@@ -82,17 +80,21 @@ export const ZKComponent = () => {
                            width: "100%",
                            height: '600px',
                            justifyContent: "center",
-                           margin: 'auto'
+                           margin: 'auto',
+                           position: 'relative'
                        }}
                 >
-                    <Typography variant="h2" sx={{fontWeight: 500}}>React Sui ZK Login Kit</Typography>
+                    <Box sx={{ position: 'absolute', top: '10%'}}>
+                        <Typography variant="h2" sx={{fontWeight: 500}}>React Sui ZK Login Kit</Typography>
+
+                    </Box>
+                    {/*ZK LOGIN COMPONENT*/}
                     <ZKLogin
                         providers={providers}
-                        userSalt={userSalt}
                         proverProvider={SUI_PROVER_ENDPOINT}
                     />
-                    {zkLoginAddress && (
-                        <ExecuteTx address={zkLoginAddress}/>
+                    {address && (
+                        <ExecuteTx address={address}/>
                     )}
                 </Stack>
             </Box>

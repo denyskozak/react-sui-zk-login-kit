@@ -1,4 +1,5 @@
 [![NPM Version](https://img.shields.io/npm/v/react-sui-zk-login-kit)](https://www.npmjs.com/package/react-sui-zk-login-kit)
+
 <div align="center">
 
 ## ✨ [**Link to Demo**](https://demo.react-sui-zk-login.com) ✨
@@ -7,44 +8,167 @@
 
 [![welcome](https://raw.githubusercontent.com/denyskozak/react-sui-zk-login-kit/refs/heads/main/welcome.png)](https://www.npmjs.com/package/react-sui-zk-login-kit)
 
-A 🛠️ React hooks library for implementing `zkLogin` 🔐 authentication and transaction flows on the **Sui blockchain**. This library provides modular, reusable hooks to handle ephemeral key management, nonce generation, JWT parsing, ZK proof generation, and more.
+---
 
-### Zk Login Intro [youtube video](https://www.youtube.com/watch?v=60dwcV8Xogg&pp=ygUHemtMb2dpbg%3D%3D)
-### What is zkLogin? [youtube video](https://www.youtube.com/watch?v=CZSH9B7j-AY)
+# react-sui-zk-login-kit
+
+React Kit for seamless ZK Login integration for Sui blokchain
+---
+
+## Table of Contents
+
+1. [Installation](#installation)
+2. [Usage](#usage)
+3. [Documentation](#documentation)
+    - [Types](#types)
+    - [Functions](#functions)
+    - [Error Handling](#error-handling)
+4. [Contributing](#contributing)
+5. [About](#about)
 
 ---
 
-## ⚡ **Hooks Overview**
-> useEphemeralKeyPair - Manages ephemeral key pair lifecycle (generate, access, and clear keys).
+## Installation
 
-> useNonce - Handles nonce and randomness generation for authentication.
+```bash
+npm install react-sui-zk-login-kit
+```
 
-> useJwt - Parses and manages JWT payloads (decode and extract information).
+```bash
+yarn add react-sui-zk-login-kit
+```
 
-> useUserSalt - Manages user salt storage (generate, access, and clear salts).
+---
 
-> useZkLoginAddress - Generates zkLogin addresses from JWT and salt.
+## Usage
 
-> useZkProof - Generates ZK proofs for secure authentication.
+### Example Usage in Your App
 
-> useTransactionExecution - Executes Sui transactions with ZK proofs.
+**App.tsx**
 
-> useLogout - Logout user and clear session storage.
+```tsx
+import {SuiClient} from '@mysten/sui/client';
+import {Content} from "./Content";
+import {ZKLoginProvider} from 'react-sui-zk-login-kit';
 
-### Todo
+const FULLNODE_URL = "https://fullnode.devnet.sui.io/";
+const suiClient = new SuiClient({url: FULLNODE_URL});
 
-- [ ] make zero deps
-- [ ] add tests
-- [ ] record video instruction
+function App() {
+    return (
+        <ZKLoginProvider client={suiClient}>
+            <Content/>
+        </ZKLoginProvider>
+    )
+}
 
-### In Progress
+export default App;
+```
 
-- [ ] add test environment
+**Content.tsx**
 
-### Done ✓
+```tsx
+import {useEffect} from "react";
+import {generateRandomness} from "@mysten/sui/zklogin";
+import {ZKLogin, useZKLogin} from "react-sui-zk-login-kit";
 
-- [x] add Google OAuth 
-- [x] add Twitch OAuth
-- [x] publish npm package
-- [x] add hooks
-- [x] add component
+const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
+
+const providers = {
+    google: {
+        clientId: "YOUR_GOOGLE_CLIENT_ID",
+        redirectURI: "YOUR_REDIRECT_URI",
+    },
+    twitch: {
+        clientId: "YOUR_TWITCH_CLIENT_ID",
+        redirectURI: "YOUR_REDIRECT_URI",
+    }
+}
+
+export const Content = () => {
+    const {encodedJwt, userSalt, setUserSalt, address, logout} = useZKLogin();
+
+    useEffect(() => {
+        if (encodedJwt) {
+            // make you request to server 
+            // for recive useSalt by jwt.iss (issuer id)
+            const requestMock = new Promise(
+                (resolve): void =>
+                    resolve(localStorage.getItem("userSalt") || generateRandomness())
+            );
+
+            requestMock.then(salt => setUserSalt(String(salt)))
+        }
+    }, [encodedJwt]);
+
+    return (
+        <ZKLogin
+            providers={providers}
+            userSalt={userSalt}
+            proverProvider={SUI_PROVER_ENDPOINT}
+        />
+    )
+}
+```
+
+---
+
+## Documentation
+
+### Types
+
+#### `ZKLogin` Component Props
+
+| Name             | Type        | Description                              |
+|------------------|-------------|------------------------------------------|
+| `providers`      | `Providers` | OAuth providers configuration.           |
+| `proverProvider` | `string`    | URL of the prover service for ZK proofs. |
+| `title`          | `string?`   | Title text for the component.            |
+| `subTitle`       | `string?`   | Subtitle text for the component.         |
+| `userSalt`       | `string?`   | Optional user-specific salt.             |
+
+#### `useZKLogin` Hook Return
+
+| Name                 | Type                                                    | Description                                 |
+|----------------------|---------------------------------------------------------|---------------------------------------------|
+| `encodedJwt`         | `string \| null`                                        | JWT string from the authentication process. |
+| `userSalt`           | `string`                                                | User-specific salt.                         |
+| `address`            | `string          `                                      | null`                                       | User's Sui blockchain address.              |
+| `logout`             | `() => void`                                            | Function to log out the user.               |
+| `setUserSalt`        | `(value: ((prevState: string) => string) `              | string) => void`                            | Function to set the user salt.          |
+| `keypair`            | `Ed25519Keypair          `                              | null`                                       | Ephemeral keypair for cryptographic operations. |
+| `executeTransaction` | `(transaction: Transaction) => Promise<string \| void>` | Executes a Sui blockchain transaction.      |
+| `client`             | `SuiClient`                                             | The Sui blockchain client instance.         |
+| `decodedJwt`         | `JwtPayload`                                            | null`                                       | Decoded JWT payload.                        |
+
+---
+
+### Error Handling
+
+All asynchronous operations may throw errors. Common errors include:
+
+- Network issues
+- Invalid JWT tokens
+- Failed ZK proof generation
+
+Ensure proper error handling for a robust user experience.
+
+---
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request with detailed descriptions of your
+changes.
+
+---
+
+## About
+
+Developed with ❤️ by [Denys Kozak](https://github.com/denyskozak). Donations are appreciated at
+`0x66aaa7eac8a801e6eab665cb9b9127e4f41bd10455606091088235f89cbb149b`.
+
+---
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT)

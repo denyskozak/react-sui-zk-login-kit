@@ -28,7 +28,6 @@ interface ZKLoginProps {
     proverProvider: string;
     title?: string;
     subTitle?: string;
-    userSalt?: string;
     observeTokenInURL?: boolean;
 }
 
@@ -37,7 +36,6 @@ export const ZKLogin = (props: ZKLoginProps) => {
         providers,
         observeTokenInURL = true,
         proverProvider,
-        userSalt,
         title = 'Sign In With',
         subTitle = 'Your Preferred Service'
     } = props;
@@ -48,7 +46,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
     const {generateEphemeralKeyPair, ephemeralKeyPair} = useEphemeralKeyPair();
     const {generateNonceValue, generateRandomnessValue, randomness, nonce} = useNonce();
     const {setJwtString, encodedJwt} = useJwt();
-    const {setUserSalt} = useUserSalt();
+    const {setUserSalt, userSalt} = useUserSalt();
     const {generateZkLoginAddress, zkLoginAddress} = useZkLoginAddress();
     const {loading: zkProofLoading, generateZkProof} = useZkProof();
 

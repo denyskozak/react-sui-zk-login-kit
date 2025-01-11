@@ -8,7 +8,6 @@ export const Container = styled.div({
     minWidth: "200px",
     maxWidth: "320px",
     maxHeight: "320px",
-    margin: "auto",
     padding: "24px",
     borderRadius: "12px",
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",

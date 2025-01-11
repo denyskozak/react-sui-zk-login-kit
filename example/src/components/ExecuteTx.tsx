@@ -1,9 +1,8 @@
-import {Box, Button, Paper, Typography} from "@mui/material";
 import {useCallback, useLayoutEffect, useState} from "react";
-import {useTransactionExecution} from "../../../src";
+import {Box, Button, Paper, Typography} from "@mui/material";
 import {getFaucetHost, requestSuiFromFaucetV0} from '@mysten/sui/faucet';
 import {Transaction} from "@mysten/sui/transactions";
-import {useZKLoginContext} from "../../../src/hooks/useZKLoginContext.ts";
+import {useZKLogin} from "../../../src";
 
 interface ExecuteTxProps {
     address: string;
@@ -17,8 +16,7 @@ function mistToSui(mistAmount: bigint | number): number {
 export const ExecuteTx = ({address}: ExecuteTxProps) => {
     const [balance, setBalance] = useState(0);
     const [txDigest, setTxDigest] = useState('');
-    const {executeTransaction} = useTransactionExecution();
-    const {client} = useZKLoginContext();
+    const {executeTransaction, client} = useZKLogin();
 
     const getSuiCoins = useCallback(async () => {
         const coins = await client.getCoins({
@@ -26,8 +24,8 @@ export const ExecuteTx = ({address}: ExecuteTxProps) => {
             coinType: "0x2::sui::SUI"
         });
 
-        const sum = coins?.data?.reduce((sum, coin)  => sum + Number(coin.balance), 0) || 0;
-         setBalance(mistToSui(sum))
+        const sum = coins?.data?.reduce((sum, coin) => sum + Number(coin.balance), 0) || 0;
+        setBalance(mistToSui(sum))
     }, []);
 
     useLayoutEffect(() => {
@@ -59,7 +57,7 @@ export const ExecuteTx = ({address}: ExecuteTxProps) => {
     }
 
     return (
-        <Paper sx={{padding: '24px', justifyContent: 'center'}}>
+        <Paper sx={{padding: '24px', marginTop: '24px', justifyContent: 'center'}}>
             <Typography>
                 Test Transaction Panel (not part of ZkLoginComponent)
             </Typography>
@@ -79,7 +77,8 @@ export const ExecuteTx = ({address}: ExecuteTxProps) => {
 
             {txDigest && (
                 <Typography>
-                    TX Digest: <a href={`https://devnet.suivision.xyz/txblock/${txDigest}`} target="_blank">{txDigest}</a>
+                    TX Digest: <a href={`https://devnet.suivision.xyz/txblock/${txDigest}`}
+                                  target="_blank">{txDigest}</a>
                 </Typography>
             )}
         </Paper>
