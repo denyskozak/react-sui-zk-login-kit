@@ -8,12 +8,9 @@
 
 [![welcome](https://raw.githubusercontent.com/denyskozak/react-sui-zk-login-kit/refs/heads/main/welcome.png)](https://www.npmjs.com/package/react-sui-zk-login-kit)
 
----
-
 # react-sui-zk-login-kit
 
 React Kit for seamless ZK Login integration for Sui blokchain
----
 
 ## Table of Contents
 
@@ -31,7 +28,7 @@ React Kit for seamless ZK Login integration for Sui blokchain
 ## Installation
 
 ```bash
-npm install react-sui-zk-login-kit
+npm install react-sui-zk-login-kit -S
 ```
 
 ```bash
@@ -74,6 +71,7 @@ import {ZKLogin, useZKLogin} from "react-sui-zk-login-kit";
 
 const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
 
+// values can be stored in .env
 const providers = {
     google: {
         clientId: "YOUR_GOOGLE_CLIENT_ID",
@@ -90,7 +88,7 @@ export const Content = () => {
 
     useEffect(() => {
         if (encodedJwt) {
-            // make you request to server 
+            // make you request to your server 
             // for recive useSalt by jwt.iss (issuer id)
             const requestMock = new Promise(
                 (resolve): void =>
@@ -147,13 +145,6 @@ export const Content = () => {
 
 Contributions are welcome! Please fork the repository and submit a pull request with detailed descriptions of your
 changes.
-
----
-
-## About
-
-Developed with ❤️ by [Denys Kozak](https://github.com/denyskozak). Donations are appreciated at
-`0xca98eb8f5f149968380e6c4ef01ec790ac5e809b80f7f915aed5db947c2f3a95`
 
 ---
 
