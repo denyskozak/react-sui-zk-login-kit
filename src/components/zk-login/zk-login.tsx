@@ -28,6 +28,8 @@ interface ZKLoginProps {
     proverProvider: string;
     title?: string;
     subTitle?: string;
+    loadingText?: string;
+    errorText?: string;
     observeTokenInURL?: boolean;
 }
 
@@ -42,7 +44,9 @@ export const ZKLogin = (props: ZKLoginProps) => {
         observeTokenInURL = true,
         proverProvider,
         title = 'Sign In With',
-        subTitle = 'Your Preferred Service'
+        subTitle = 'Your Preferred Service',
+        loadingText = 'Loading ZK Proof ...',
+        errorText = 'Unfortunately, ZK Proof failed, please try again',
     } = props;
 
     const {client: suiClient} = useZKLoginContext();
@@ -56,6 +60,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
     const {generateZkProof} = useZkProof();
 
     const [loading, setLoading] = useState(false);
+    const [showError, setShowError] = useState(false);
 
     // Step 1
     useEffect(() => {
@@ -90,33 +95,41 @@ export const ZKLogin = (props: ZKLoginProps) => {
     // Step 4
     useEffect(() => {
         const zkProof = async () => {
-            if (userSalt && encodedJwt && ephemeralKeyPair) {
-                setLoading(true);
-                const extendedPublicKey = getExtendedEphemeralPublicKey(
-                    ephemeralKeyPair.getPublicKey()
-                );
-                const {epoch} = await suiClient.getLatestSuiSystemState();
+            try {
+                if (userSalt && encodedJwt && ephemeralKeyPair) {
+                    setLoading(true);
+                    setShowError(false);
+                    const extendedPublicKey = getExtendedEphemeralPublicKey(
+                        ephemeralKeyPair.getPublicKey()
+                    );
+                    const {epoch} = await suiClient.getLatestSuiSystemState();
 
-                const maxEpoch = Number(epoch) + 2; // live 2 epochs
+                    const maxEpoch = Number(epoch) + 2; // live 2 epochs
 
-                const result = await generateZkProof(proverProvider, {
-                    jwt: encodedJwt,
-                    extendedEphemeralPublicKey: extendedPublicKey,
-                    maxEpoch,
-                    jwtRandomness: randomness,
-                    salt: userSalt,
-                    keyClaimName: "sub",
-                });
+                    const result = await generateZkProof(proverProvider, {
+                        jwt: encodedJwt,
+                        extendedEphemeralPublicKey: extendedPublicKey,
+                        maxEpoch,
+                        jwtRandomness: randomness,
+                        salt: userSalt,
+                        keyClaimName: "sub",
+                    });
 
-                if (result && result.proofPoints) {
-                    generateZkLoginAddress(encodedJwt, userSalt);
-                    setLoading(false);
-                    removeHash();
+                    if (result && result.proofPoints) {
+                        generateZkLoginAddress(encodedJwt, userSalt);
+                        setLoading(false);
+                        removeHash();
+                    }
                 }
+            } catch (error) {
+                console.error('Error User Salt Proof ZK Login component', error);
+                setLoading(false);
+                setShowError(true);
+                removeHash();
             }
         };
 
-        zkProof().catch((error) => console.error('Error User Salt Proof ZK Login component', error));
+        zkProof();
     }, [setUserSalt, userSalt, ephemeralKeyPair]);
 
     const providerList = useMemo(() => Object.entries(providers), [providers]);
@@ -176,7 +189,14 @@ export const ZKLogin = (props: ZKLoginProps) => {
             {/*If have JWT and no userSalt*/}
             {loading && (
                 <Typography>
-                    Loading ZK Proof ...
+                    {loadingText}
+                </Typography>
+            )}
+
+            {/*If have JWT and no userSalt*/}
+            {showError && (
+                <Typography>
+                    {errorText}
                 </Typography>
             )}
 

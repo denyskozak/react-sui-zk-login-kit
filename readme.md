@@ -102,7 +102,6 @@ export const Content = () => {
     return (
         <ZKLogin
             providers={providers}
-            userSalt={userSalt}
             proverProvider={SUI_PROVER_ENDPOINT}
         />
     )
