@@ -3,6 +3,7 @@
 <div align="center">
 
 ## ✨ [**Link to Demo**](https://demo.react-sui-zk-login.com) ✨
+## 📺 [**Youtube video guide**](https://youtu.be/2qnjmKg3ugY?si=zHsCCZVYaXlklpIW) 📺
 
 </div>
 
