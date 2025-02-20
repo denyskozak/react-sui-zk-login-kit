@@ -131,7 +131,7 @@ export const Content = () => {
 |----------------------|---------------------------------------------------------|---------------------------------------------|
 | `encodedJwt`         | `string \| null`                                        | JWT string from the authentication process. |
 | `userSalt`           | `string`                                                | User-specific salt.                         |
-| `address`            | `string`                                                | null`                                       | User's Sui blockchain address.              |
+| `address`            | `string \| null`                                        | Address                                     | User's Sui blockchain address.              |
 | `logout`             | `() => void`                                            | Function to log out the user.               |
 | `setUserSalt`        | `(value: string) => void`                               | Set new user salt                           | Function to set the user salt.          |
 | `keypair`            | `Ed25519Keypair \| null`                                | User keypair                                | Ephemeral keypair for cryptographic operations. |
