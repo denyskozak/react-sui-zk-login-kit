@@ -1,6 +1,6 @@
 {
   "name": "react-sui-zk-login-kit",
-  "version": "1.0.27",
+  "version": "1.0.32",
   "type": "module",
   "description": "A React kit for SUI zk login integration with components and hooks.",
   "repository": {
@@ -49,17 +49,17 @@
     "@emotion/styled": "^11.14.0",
     "@mysten/sui": "^1.17.0",
     "axios": "^1.7.9",
-    "jwt-decode": "^4.0.0",
-    "react": "^18.0.0"
+    "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "copyfiles": "^2.4.1",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "react": "^18.3.5 || ^19.0.0"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.3.5 || ^19.0.0",
+    "react-dom": "^18.3.5 || ^19.0.0"
   }
 }

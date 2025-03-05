@@ -29,11 +29,11 @@ React Kit for seamless ZK Login integration for Sui blokchain
 ## Installation
 
 ```bash
-npm install react-sui-zk-login-kit -S
+npm install react-sui-zk-login-kit react -S
 ```
 
 ```bash
-yarn add react-sui-zk-login-kit
+yarn add react-sui-zk-login-kit react
 ```
 
 ---

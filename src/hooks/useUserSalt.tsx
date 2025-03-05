@@ -5,7 +5,7 @@ export const useUserSalt = () => {
     const {state, dispatch} = useZKLoginContext();
 
     const addUserSalt = useCallback((salt: string) => {
-        localStorage.setItem("userSalt", salt);
+        localStorage.setItem("userSalt", salt)
         dispatch({type: "SET_USER_SALT", payload: salt});
     }, []);
 
