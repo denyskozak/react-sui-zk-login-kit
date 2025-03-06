@@ -7,20 +7,21 @@ import {getExtendedEphemeralPublicKey} from "@mysten/sui/zklogin";
 import {useZKLoginContext} from "../../hooks/useZKLoginContext";
 import {TwitchIconImg, IconImg, Icon, IconContainer, Typography, Container, Code, Button} from './zk-login.styles';
 
-interface GoogleParams {
-    redirectURI: string;
+
+const getImage = (image: string | { src: string }) => typeof image === "object" ? image.src : image;
+
+interface ProviderBase {
     clientId: string;
-    jwt?: string;
+    redirectURI: string;
 }
 
-interface TwitchParams {
-    redirectURI: string;
-    clientId: string;
+interface GoogleParams extends ProviderBase {
+    jwt?: string;
 }
 
 type Providers = {
     google?: GoogleParams,
-    twitch?: TwitchParams
+    twitch?: ProviderBase
 };
 
 interface ZKLoginProps {
@@ -31,11 +32,7 @@ interface ZKLoginProps {
     loadingText?: string;
     errorText?: string;
     observeTokenInURL?: boolean;
-}
-
-function removeHash() {
-    history.pushState("", document.title, window.location.pathname
-        + window.location.search);
+    disableRemoveHash?: boolean;
 }
 
 export const ZKLogin = (props: ZKLoginProps) => {
@@ -47,6 +44,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
         subTitle = 'Your Preferred Service',
         loadingText = 'Loading ZK Proof ...',
         errorText = 'Unfortunately, ZK Proof failed, please try again',
+        disableRemoveHash = false,
     } = props;
 
     const {client: suiClient} = useZKLoginContext();
@@ -61,6 +59,12 @@ export const ZKLogin = (props: ZKLoginProps) => {
 
     const [loading, setLoading] = useState(false);
     const [showError, setShowError] = useState(false);
+
+    function removeHash() {
+        if (disableRemoveHash) return;
+        history.pushState("", document.title, window.location.pathname
+            + window.location.search);
+    }
 
     // Step 1
     useEffect(() => {
@@ -117,9 +121,9 @@ export const ZKLogin = (props: ZKLoginProps) => {
 
                     if (result && result.proofPoints) {
                         generateZkLoginAddress(encodedJwt, userSalt);
-                        setLoading(false);
                         removeHash();
                     }
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Error User Salt Proof ZK Login component', error);
@@ -160,7 +164,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
                 key="google"
                 onClick={handleGoogleLogin}
             >
-                <IconImg src={GoogleIcon}/>
+                <IconImg src={getImage(GoogleIcon)}/>
             </Icon>
         ),
         twitch: (
@@ -168,7 +172,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
                 key="twitch"
                 onClick={handleTwitchLogin}
             >
-                <TwitchIconImg src={TwitchIcon}/>
+                <TwitchIconImg src={getImage(TwitchIcon)}/>
             </Icon>
         )
     };

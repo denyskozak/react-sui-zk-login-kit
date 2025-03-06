@@ -5,12 +5,18 @@ export const useUserSalt = () => {
     const {state, dispatch} = useZKLoginContext();
 
     const addUserSalt = useCallback((salt: string) => {
-        localStorage.setItem("userSalt", salt)
+        if (typeof window !== "undefined") {
+            localStorage.setItem("userSalt", salt);
+        }
+
         dispatch({type: "SET_USER_SALT", payload: salt});
     }, []);
 
     const clearUserSalt = useCallback(() => {
-        localStorage.removeItem("userSalt");
+        if (typeof window !== "undefined") {
+            localStorage.removeItem("userSalt");
+        }
+
         dispatch({type: "DELETE_USER_SALT"});
     }, []);
 

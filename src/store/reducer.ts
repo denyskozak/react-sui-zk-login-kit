@@ -30,5 +30,6 @@ export const zkLoginReducer = (state: ZKLoginState, action: ZKLoginAction): ZKLo
 
 export const borrowInitState = () => {
     const sessionState = loadStateFromSession(initialZKLoginState);
-    return {...sessionState, userSalt: localStorage.getItem("userSalt") };
+    const userSalt = typeof window !== 'undefined' ? localStorage.getItem("userSalt") : '';
+    return {...sessionState, userSalt };
 }
