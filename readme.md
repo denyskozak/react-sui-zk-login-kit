@@ -41,9 +41,11 @@ yarn add react-sui-zk-login-kit react
 
 ## Usage
 
-### Example Usage in Your App
+#### For Next JS
+- use Provider and Component with 'use-client'
+- if experience problem with default remove hash from url try "disableRemoveHash" prop
 
-for NextJS use Provider and Component with 'use-client'
+### Example Usage in Your React App
 
 **App.tsx**
 
