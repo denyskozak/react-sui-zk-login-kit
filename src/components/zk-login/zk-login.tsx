@@ -133,8 +133,10 @@ export const ZKLogin = (props: ZKLoginProps) => {
             }
         };
 
-        zkProof();
-    }, [setUserSalt, userSalt, ephemeralKeyPair]);
+        if (!zkLoginAddress) {
+            zkProof();
+        }
+    }, [setUserSalt, userSalt, ephemeralKeyPair, zkLoginAddress]);
 
     const providerList = useMemo(() => Object.entries(providers), [providers]);
 
