@@ -10,6 +10,10 @@ import {useTransactionExecution} from "./useTransactionExecution";
 import {useZKLoginContext} from "./useZKLoginContext";
 import {useUserSalt} from "./useUserSalt";
 
+interface UseZKLoginProps {
+    onTransactionFailed?: () => void,
+}
+
 interface UseZKLogin {
     encodedJwt: string | null,
     logout: () => void,
@@ -23,12 +27,12 @@ interface UseZKLogin {
 }
 
 // Main hook for most cases, others for specific usage
-export const useZKLogin = (): UseZKLogin => {
+export const useZKLogin = (props?: UseZKLoginProps): UseZKLogin => {
     const {ephemeralKeyPair} = useEphemeralKeyPair();
     const {encodedJwt, decodedJwt} = useJwt();
     const {zkLoginAddress} = useZkLoginAddress();
     const {logout} = useLogout();
-    const {executeTransaction} = useTransactionExecution();
+    const {executeTransaction} = useTransactionExecution(props?.onTransactionFailed);
     const {client} = useZKLoginContext();
     const {userSalt, setUserSalt} = useUserSalt();
 

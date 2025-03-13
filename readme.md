@@ -42,6 +42,7 @@ yarn add react-sui-zk-login-kit react
 ## Usage
 
 #### For Next JS
+
 - use Provider and Component with 'use-client'
 - if experience problem with default remove hash from url try "disableRemoveHash" prop
 
@@ -122,17 +123,24 @@ export const Content = () => {
 
 #### `ZKLogin` Component Props
 
-| Name                | Type        | Description                                                         |
-|---------------------|-------------|---------------------------------------------------------------------|
-| `providers`         | `Providers` | OAuth providers configuration.                                      |
-| `proverProvider`    | `string`    | URL of the prover service for ZK proofs.                            |
-| `title`             | `string?`   | Title text for the component.                                       |
-| `subTitle`          | `string?`   | Subtitle text for the component.                                    |
-| `loadingText`       | `string?`   | Loading text                                                        |
-| `errorText`         | `string?`   | Error text                                                          |
-| `userSalt`          | `string?`   | Optional user-specific salt.                                        |
-| `observeTokenInURL` | `boolean?`  | default - true Observer token in URL                                |
-| `disableRemoveHash` | `boolean?`  | default - false (Mostly for NextJS) Disable removing hash from url. |
+| Name                 | Type         | Description                                                         |
+|----------------------|--------------|---------------------------------------------------------------------|
+| `providers`          | `Providers`  | OAuth providers configuration.                                      |
+| `proverProvider`     | `string`     | URL of the prover service for ZK proofs.                            |
+| `title?`             | `string`     | Title text for the component.                                       |
+| `subTitle?`          | `string`     | Subtitle text for the component.                                    |
+| `loadingText?`       | `string`     | Loading text                                                        |
+| `errorText?`         | `string`     | Error text                                                          |
+| `userSalt?`          | `string`     | Optional user-specific salt.                                        |
+| `observeTokenInURL?` | `boolean`    | default - true Observer token in URL                                |
+| `disableRemoveHash?` | `boolean`    | default - false (Mostly for NextJS) Disable removing hash from url. |
+| `onSuccess?`         | `() => void` | On Success login hook                                               | Decoded JWT payload.                        |
+
+#### `useZKLogin` Hook Props Object
+
+| Name                   | Type         | Description                                  |
+|------------------------|--------------|----------------------------------------------|
+| `onTransactionFailed?` | `() => void` | Optional, hook on transaction failed execute |
 
 #### `useZKLogin` Hook Return
 

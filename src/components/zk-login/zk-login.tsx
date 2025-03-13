@@ -33,6 +33,7 @@ interface ZKLoginProps {
     errorText?: string;
     observeTokenInURL?: boolean;
     disableRemoveHash?: boolean;
+    onSuccess?: () => void;
 }
 
 export const ZKLogin = (props: ZKLoginProps) => {
@@ -45,6 +46,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
         loadingText = 'Loading ZK Proof ...',
         errorText = 'Unfortunately, ZK Proof failed, please try again',
         disableRemoveHash = false,
+        onSuccess,
     } = props;
 
     const {client: suiClient} = useZKLoginContext();
@@ -121,6 +123,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
 
                     if (result && result.proofPoints) {
                         generateZkLoginAddress(encodedJwt, userSalt);
+                        onSuccess?.();
                         removeHash();
                     }
                     setLoading(false);

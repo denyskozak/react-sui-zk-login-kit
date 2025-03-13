@@ -7,7 +7,7 @@ import {genAddressSeed, getZkLoginSignature} from "@mysten/sui/zklogin";
 import {useUserSalt} from "./useUserSalt";
 import {useZkProof} from "./useZkProof";
 
-export const useTransactionExecution = () => {
+export const useTransactionExecution = (onTransactionFailed?: () => void) => {
     const [executing, setExecuting] = useState(false);
     const [digest, setDigest] = useState<string | null>(null);
     const {client} = useZKLoginContext();
@@ -63,6 +63,7 @@ export const useTransactionExecution = () => {
             return result.digest;
         } catch (error) {
             console.error("Transaction execution error:", error);
+            onTransactionFailed?.();
         } finally {
             setExecuting(false);
         }
