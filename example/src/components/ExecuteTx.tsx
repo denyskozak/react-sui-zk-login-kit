@@ -1,6 +1,6 @@
 import {useCallback, useLayoutEffect, useState} from "react";
 import {Box, Button, Paper, Typography} from "@mui/material";
-import {getFaucetHost, requestSuiFromFaucetV0} from '@mysten/sui/faucet';
+import {getFaucetHost, requestSuiFromFaucetV2} from '@mysten/sui/faucet';
 import {Transaction} from "@mysten/sui/transactions";
 import {useZKLogin} from "../../../src";
 
@@ -33,7 +33,7 @@ export const ExecuteTx = ({address}: ExecuteTxProps) => {
     }, []);
 
     const faucetHandle = async () => {
-        await requestSuiFromFaucetV0({
+        await requestSuiFromFaucetV2({
             host: getFaucetHost('devnet'),
             recipient: address,
         });

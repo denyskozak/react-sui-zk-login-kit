@@ -14,6 +14,7 @@ const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
 const providers = {
     google: {
         clientId: "648851101099-uit5tqa2gf0nr1vvpjorc87k2u4minip.apps.googleusercontent.com",
+        // redirectURI: "http://localhost:5173",
         redirectURI: "https://demo.react-sui-zk-login.com",
     },
     twitch: {
