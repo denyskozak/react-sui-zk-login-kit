@@ -2,7 +2,6 @@
 
 <div align="center">
 
-## ✨ [**Link to Demo**](https://demo.react-sui-zk-login.com) ✨
 ## 📺 [**Youtube Video Guide**](https://youtu.be/2qnjmKg3ugY?si=zHsCCZVYaXlklpIW) 📺
 ### [**Google Setup Guide**](https://www.youtube.com/watch?v=Hj_dR9gyYCA&t=15s)
 
