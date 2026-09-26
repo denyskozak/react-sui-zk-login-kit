@@ -6,12 +6,13 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "target": "ESNext",
     "jsx": "react-jsx",
-    "skipLibCheck": true, // Skip type checking for node_modules
+    "skipLibCheck": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

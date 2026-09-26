@@ -1,4 +1,4 @@
-import {useCallback, useLayoutEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {Box, Button, Paper, Typography} from "@mui/material";
 import {getFaucetHost, requestSuiFromFaucetV2} from '@mysten/sui/faucet';
 import {Transaction} from "@mysten/sui/transactions";
@@ -19,18 +19,32 @@ export const ExecuteTx = ({address}: ExecuteTxProps) => {
     const {executeTransaction, client} = useZKLogin();
 
     const getSuiCoins = useCallback(async () => {
-        const coins = await client.getCoins({
+        const coins = await client.core.listCoins({
             owner: address,
             coinType: "0x2::sui::SUI"
         });
 
-        const sum = coins?.data?.reduce((sum, coin) => sum + Number(coin.balance), 0) || 0;
+        const sum = coins.objects.reduce((sum, coin) => sum + Number(coin.balance), 0);
         setBalance(mistToSui(sum))
-    }, []);
+    }, [address, client]);
 
-    useLayoutEffect(() => {
-        getSuiCoins()
-    }, []);
+    useEffect(() => {
+        let cancelled = false;
+
+        client.core.listCoins({
+            owner: address,
+            coinType: "0x2::sui::SUI"
+        }).then((coins) => {
+            if (!cancelled) {
+                const sum = coins.objects.reduce((total, coin) => total + Number(coin.balance), 0);
+                setBalance(mistToSui(sum));
+            }
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [address, client]);
 
     const faucetHandle = async () => {
         await requestSuiFromFaucetV2({

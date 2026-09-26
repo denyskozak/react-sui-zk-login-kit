@@ -78,7 +78,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
         const generateRandomnessAndNonce = async () => {
             if (ephemeralKeyPair && !randomness && !nonce) {
                 const randomValue = generateRandomnessValue();
-                const {epoch} = await suiClient.getLatestSuiSystemState();
+                const {systemState: {epoch}} = await suiClient.core.getCurrentSystemState();
 
                 const maxEpoch = Number(epoch) + 2; // live 2 epochs
                 generateNonceValue(ephemeralKeyPair.getSecretKey(), randomValue, maxEpoch);
@@ -108,7 +108,7 @@ export const ZKLogin = (props: ZKLoginProps) => {
                     const extendedPublicKey = getExtendedEphemeralPublicKey(
                         ephemeralKeyPair.getPublicKey()
                     );
-                    const {epoch} = await suiClient.getLatestSuiSystemState();
+                    const {systemState: {epoch}} = await suiClient.core.getCurrentSystemState();
 
                     const maxEpoch = Number(epoch) + 2; // live 2 epochs
 

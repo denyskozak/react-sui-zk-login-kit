@@ -7,7 +7,7 @@ export const useZkLoginAddress = () => {
     const {state, dispatch} = useZKLoginContext();
 
     const generateZkLoginAddress = useCallback((jwt: string, userSalt: string) => {
-        const address = jwtToAddress(jwt, userSalt);
+        const address = jwtToAddress(jwt, userSalt, true);
         dispatch({type: "SET_ZK_LOGIN_ADDRESS", payload: address});
     }, []);
 

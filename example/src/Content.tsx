@@ -15,11 +15,11 @@ const providers = {
     google: {
         clientId: "648851101099-uit5tqa2gf0nr1vvpjorc87k2u4minip.apps.googleusercontent.com",
         // redirectURI: "http://localhost:5173",
-        redirectURI: "https://demo.react-sui-zk-login.com",
+        redirectURI: "http://localhost:5173",
     },
     twitch: {
         clientId: "ltu7mhvfj4l04maulcjcqx1wm5e5zh",
-        redirectURI: "https://demo.react-sui-zk-login.com",
+        redirectURI: "http://localhost:5173",
     }
 }
 
@@ -76,8 +76,8 @@ export const Content = () => {
                 <Box sx={{ position: 'absolute', top: address ? '5%' : '15%'}}>
                     <Typography variant="h2" sx={{fontWeight: 500}}>React Sui ZK Login Kit</Typography>
                 </Box>
-                <Stack alignItems="center"
-                       sx={{
+                <Stack sx={{
+                           alignItems: "center",
                            backgroundImage: `url(${backgroundImage})`,
                            backgroundRepeat: "no-repeat",
                            backgroundSize: "cover",

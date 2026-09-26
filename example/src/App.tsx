@@ -1,10 +1,10 @@
-import {SuiClient} from '@mysten/sui/client';
+import {SuiGrpcClient} from '@mysten/sui/grpc';
 
 import {Content} from "./Content.tsx";
 import {ZKLoginProvider} from '../../src';
 
 const FULLNODE_URL = "https://fullnode.devnet.sui.io/";
-const suiClient = new SuiClient({url: FULLNODE_URL});
+const suiClient = new SuiGrpcClient({network: 'devnet', baseUrl: FULLNODE_URL});
 
 function App() {
     return (

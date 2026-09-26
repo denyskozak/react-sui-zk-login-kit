@@ -27,10 +27,8 @@ export const useTransactionExecution = (onTransactionFailed?: () => void) => {
             if (!decodedJwt) throw new Error('No decodedJwt setup');
             if (!zkProof) throw new Error('No zkProof setup');
 
-            const {bytes, signature: userSignature} = await transaction.sign({
-                client,
-                signer: ephemeralKeyPair, // This must be the same ephemeral key pair used in the ZKP request
-            });
+            const bytes = await transaction.build({client});
+            const {signature: userSignature} = await ephemeralKeyPair.signTransaction(bytes);
 
             const addressSeed: string = genAddressSeed(
                 BigInt(userSalt!),
@@ -39,7 +37,7 @@ export const useTransactionExecution = (onTransactionFailed?: () => void) => {
                 String(decodedJwt.aud),
             ).toString();
 
-            const {epoch} = await client.getLatestSuiSystemState();
+            const {systemState: {epoch}} = await client.core.getCurrentSystemState();
 
             const maxEpoch = Number(epoch) + 2; // live 2 epochs
 
@@ -52,15 +50,22 @@ export const useTransactionExecution = (onTransactionFailed?: () => void) => {
                 userSignature,
             });
 
-            const result = await client.executeTransactionBlock({
-                transactionBlock: bytes,
-                signature: zkLoginSignature,
+            const result = await client.core.executeTransaction({
+                transaction: bytes,
+                signatures: [zkLoginSignature],
             });
-            await client.waitForTransaction({digest: result.digest});
 
-            setDigest(result.digest);
+            if (result.$kind === 'FailedTransaction') {
+                throw new Error('Transaction execution failed');
+            }
 
-            return result.digest;
+            await client.core.waitForTransaction({result});
+
+            const digest = result.Transaction.digest;
+
+            setDigest(digest);
+
+            return digest;
         } catch (error) {
             console.error("Transaction execution error:", error);
             onTransactionFailed?.();

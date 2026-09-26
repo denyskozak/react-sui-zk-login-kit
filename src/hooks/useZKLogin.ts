@@ -3,7 +3,7 @@ import {useZkLoginAddress} from "./useZkLoginAddress";
 import {useLogout} from "./useLogout";
 import type { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
 import {JwtPayload} from "jwt-decode";
-import { SuiClient } from "@mysten/sui/client";
+import type { ClientWithCoreApi } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
 import {useEphemeralKeyPair} from "./useEphemeralKeyPair";
 import {useTransactionExecution} from "./useTransactionExecution";
@@ -20,7 +20,7 @@ interface UseZKLogin {
     address: string | null,
     keypair: Ed25519Keypair | null,
     executeTransaction: (transaction: Transaction) => Promise<string | void>,
-    client: SuiClient,
+    client: ClientWithCoreApi,
     decodedJwt: JwtPayload | null,
     userSalt: string | null,
     setUserSalt: (value: string) => void

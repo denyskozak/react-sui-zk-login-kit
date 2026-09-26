@@ -1,12 +1,12 @@
 import {useReducer, PropsWithChildren, useEffect} from "react";
-import {SuiClient} from "@mysten/sui/client";
+import type {ClientWithCoreApi} from "@mysten/sui/client";
 import {initialZKLoginState} from "../../store/actions";
 import {borrowInitState, zkLoginReducer} from "../../store/reducer";
 import {saveStateToSession} from "../../store/session";
 import {ZKLoginContext} from "./context";
 
 interface Props {
-    client: SuiClient;
+    client: ClientWithCoreApi;
 }
 
 export const ZKLoginProvider = ({children, client}: PropsWithChildren<Props>) => {
@@ -23,5 +23,4 @@ export const ZKLoginProvider = ({children, client}: PropsWithChildren<Props>) =>
         </ZKLoginContext.Provider>
     );
 };
-
 

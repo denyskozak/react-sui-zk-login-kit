@@ -29,11 +29,11 @@ React Kit for seamless ZK Login integration for Sui blokchain
 ## Installation
 
 ```bash
-npm install react-sui-zk-login-kit react -S
+npm install react-sui-zk-login-kit @mysten/sui react react-dom
 ```
 
 ```bash
-yarn add react-sui-zk-login-kit react
+yarn add react-sui-zk-login-kit @mysten/sui react react-dom
 ```
 
 ---
@@ -50,12 +50,15 @@ yarn add react-sui-zk-login-kit react
 **App.tsx**
 
 ```tsx
-import {SuiClient} from '@mysten/sui/client';
+import {SuiGrpcClient} from '@mysten/sui/grpc';
 import {Content} from "./Content";
 import {ZKLoginProvider} from 'react-sui-zk-login-kit';
 
 const FULLNODE_URL = "https://fullnode.devnet.sui.io/";
-const suiClient = new SuiClient({url: FULLNODE_URL});
+const suiClient = new SuiGrpcClient({
+    network: 'devnet',
+    baseUrl: FULLNODE_URL,
+});
 
 function App() {
     return (
@@ -152,7 +155,13 @@ export const Content = () => {
 | `setUserSalt`        | `(value: string) => void`                               | Set new user salt                           | Function to set the user salt.          |
 | `keypair`            | `Ed25519Keypair \| null`                                | User keypair                                | Ephemeral keypair for cryptographic operations. |
 | `executeTransaction` | `(transaction: Transaction) => Promise<string \| void>` | Executes a Sui blockchain transaction.      |
-| `client`             | `SuiClient`                                             | The Sui blockchain client instance.         |
+| `client`             | `ClientWithCoreApi`                                     | A Sui gRPC, GraphQL, or compatible core API client. |
+
+### Compatibility
+
+- Version 1.1.12 and newer uses the ESM-only `@mysten/sui` 2.x API.
+- TypeScript projects should use `moduleResolution: "Bundler"`, `"NodeNext"`, or `"Node16"`.
+- Existing zkLogin addresses remain compatible because the kit explicitly uses Sui's legacy address derivation mode.
 | `decodedJwt`         | `JwtPayload \| null`                                    | Decoded JWT from used Oauth                 | Decoded JWT payload.                        |
 
 ---

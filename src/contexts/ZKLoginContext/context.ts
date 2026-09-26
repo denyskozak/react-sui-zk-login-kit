@@ -1,11 +1,11 @@
 import {createContext, Dispatch} from "react";
-import {SuiClient} from "@mysten/sui/client";
+import type {ClientWithCoreApi} from "@mysten/sui/client";
 import {initialZKLoginState, ZKLoginAction} from "../../store/actions";
 
 export interface ZKLoginContextValue {
     state: typeof initialZKLoginState;
     dispatch: Dispatch<ZKLoginAction>;
-    client: SuiClient;
+    client: ClientWithCoreApi;
 }
 
 export const ZKLoginContext = createContext<ZKLoginContextValue | undefined>(undefined);
